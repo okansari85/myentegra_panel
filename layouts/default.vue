@@ -68,26 +68,13 @@
           prepend-icon="mdi-exclamation"
         >
           <template v-slot:activator>
-            <v-list-item-title>Mesaj Yönetimi</v-list-item-title>
+            <v-list-item-title>Ürün Yönetimi</v-list-item-title>
           </template>
             <v-list-item
               link
               to="/customer_messages"
             >
-              <v-list-item-title>Site Mesajları</v-list-item-title>
-            </v-list-item>
-          </v-list-group>
-           <v-list-group
-          prepend-icon="mdi-cog"
-        >
-          <template v-slot:activator>
-            <v-list-item-title>Bölüm Yönetimi</v-list-item-title>
-          </template>
-            <v-list-item
-              link
-              to="/sections"
-            >
-              <v-list-item-title>Bölümler</v-list-item-title>
+              <v-list-item-title>Ürün Listesi</v-list-item-title>
             </v-list-item>
           </v-list-group>
         </v-list>
