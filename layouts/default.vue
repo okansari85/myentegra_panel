@@ -72,7 +72,7 @@
           </template>
             <v-list-item
               link
-              to="/customer_messages"
+              to="/products"
             >
               <v-list-item-title>Ürün Listesi</v-list-item-title>
             </v-list-item>
