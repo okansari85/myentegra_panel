@@ -56,7 +56,7 @@ export default {
   ],
 
   primevue: {
-    components: ["Menubar","InputText","Button"]
+    components: ["Menubar","InputText","Button","Galleria","Message"]
   },
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
@@ -71,6 +71,10 @@ export default {
     }
   },
 
+  auth: {
+    redirect:false
+  },
+/*
   auth: {
     cookie: {
       options: {
@@ -120,7 +124,10 @@ export default {
       '~/plugins/axios.js'
     ]
   },
-  //plugins: [{src: '~/plugins/full-calendar', ssr: false}],
+
+*/
+
+
 
   // PWA module configuration: https://go.nuxtjs.dev/pwa
   pwa: {

@@ -55,8 +55,8 @@
             </v-list-item-avatar>
 
             <v-list-item-content>
-              <v-list-item-title><b>{{ $auth.user.name }}</b></v-list-item-title>
-              <v-list-item-subtitle>{{ $auth.user.email}}</v-list-item-subtitle>
+              <v-list-item-title><b>Yüce Admin</b></v-list-item-title>
+              <v-list-item-subtitle>admin@admin.com</v-list-item-subtitle>
             </v-list-item-content>
           </v-list-item>
         </template>
@@ -95,7 +95,6 @@
 /*eslint-disable*/
  export default {
     name:"default",
-    middleware: 'auth',
     data () {
       return {
         clipped: true,
