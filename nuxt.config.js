@@ -74,7 +74,7 @@ export default {
   auth: {
     redirect:false
   },
-/*
+
   auth: {
     cookie: {
       options: {
@@ -125,7 +125,7 @@ export default {
     ]
   },
 
-*/
+
 
 
 
