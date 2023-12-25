@@ -21,9 +21,9 @@
     "nuxt": "^2.15.8",
     "primeicons": "^6.0.1",
     "primevue": "^2.10.2",
-    "vue": "^2.7.10",
+    "vue": "^2.7.16",
     "vue-server-renderer": "^2.7.10",
-    "vue-template-compiler": "^2.7.10",
+    "vue-template-compiler": "^2.7.16",
     "vuetify": "^2.6.10"
   },
   "devDependencies": {
