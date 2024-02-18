@@ -70,6 +70,12 @@
           <template v-slot:activator>
             <v-list-item-title>Ürün Yönetimi</v-list-item-title>
           </template>
+          <v-list-item
+              link
+              to="/categories"
+            >
+              <v-list-item-title>Kategoriler</v-list-item-title>
+            </v-list-item>
             <v-list-item
               link
               to="/products"

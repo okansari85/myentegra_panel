@@ -3,8 +3,8 @@ export default function (ctx, inject) {
   let {
       app: { $axios },
   } = ctx;
-const entegra = $axios.create()
-entegra.defaults.withCredentials = true
-entegra.setBaseURL(process.env.apiURL)
-inject('entegraApi', entegra)
+const entegraApi = $axios.create()
+entegraApi.defaults.withCredentials = true
+entegraApi.setBaseURL("http://localhost:8000/api/")
+inject('entegraApi', entegraApi)
 }

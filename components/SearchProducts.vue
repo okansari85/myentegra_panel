@@ -4,12 +4,12 @@
       <v-tooltip right>
         <template v-slot:activator="{ on, attrs }">
           <v-btn icon v-bind="attrs" v-on="on">
-            <v-icon/>
+            <v-icon />
           </v-btn>
         </template>
         <span>asdasd</span>
       </v-tooltip>
-      <v-spacer/>
+      <v-spacer />
       <v-text-field
         v-model="search"
         eager
@@ -23,119 +23,178 @@
         <v-icon>mdi-dots-vertical</v-icon>
       </v-btn>
     </v-toolbar>
-    <v-divider></v-divider>
-    <v-container>
-    <Message severity="info" :closable="false">Lütfen ürün kodu ile arama yapınız</Message>
-
-    <Galleria :value="images" v-if="1==0">
-<template #item="slotProps">
-        <img :src="slotProps.item.itemImageSrc" :alt="slotProps.item.alt" >
+    <v-divider/>
+    <v-container/>
+<v-data-table
+      :v-model="selectedArray"
+      eager
+      :loading="loading"
+      :headers="headers"
+      :items="items"
+      :search="search"
+      :show-expand="showExpand"
+      :single-expand="singleExpand"
+      :expanded.sync="expanded"
+      :item-key="keyOfItem"
+      :options.sync="options"
+      :server-items-length="itemsLength"
+      :disable-pagination="disablePagination"
+      :hide-default-footer="paginationShow"
+      :footer-props="footerProps"
+      :showSelect="showSelect"
+      :single-select="singleSelect"
+      @item-expanded="loadDetails"
+      @click:row="rowClick"
+      @item-selected="itemselected"
+    >
+      <template v-slot:expanded-item="{ headers }">
+        <td :colspan="headers.length">
+          <slot name="expanded"></slot>
+        </td>
+    </template>
+    <template v-for="slot in slots" v-slot:[`item.${slot.slotName}`]="{ item }">
+      <slot :name="slot.slotName" :degisken="item"></slot>
+    </template>
+      <template v-slot:[`item.actions`]="{ item }">
+        <v-icon
+          v-if="detailEnabled"
+          small
+          @click="detItem(item)">mdi-eye</v-icon>
+        <v-icon
+          v-if="showEditBtn"
+          small
+          @click="editItem(item)">mdi-pencil</v-icon>
+        <v-icon
+          v-if="showDeleteBtn"
+          small
+          @click="deleteItem(item)"
+        >mdi-delete</v-icon>
       </template>
-</Galleria>
-</v-container>
+</v-data-table>
   </v-card>
 </template>
 <script>
 /*eslint-disable*/
-import Galleria from 'primevue/galleria';
-import Message from 'primevue/message';
+import _ from 'lodash';
 export default {
+  props:{
+    headers: {
+      type: Array,
+      default: null
+    },
+    slots:{
+      type:Array,
+      default:null
+    },
+    items: {
+      type: Array,
+      default: function () { return [] }
+    },
+    title:{
+      type:String,
+      default:null
+    },
+    showExpand:{
+      type:Boolean,
+      default:false
+    },
+    singleExpand:{
+      type:Boolean,
+      default:false
+    },
+    keyOfItem:{
+      type:String,
+      default:null
+    },
+    loading:{
+      type:Boolean,
+      default:false
+    },
+    searchPorperyt:{
+      type:Boolean,
+      default:true
+    },
+    paginationShow:{
+      type:Boolean,
+      default:false
+    },
+    disablePagination:{
+      type:Boolean,
+      default:false
+    },
+    detailEnabled:{
+      type:Boolean,
+      default:false
+    },
+    itemsLength:{
+      type:Number,
+      default:0,
+    },
+    showSelect:{
+      type:Boolean,
+      default:false
+    },
+    singleSelect:{
+      type:Boolean,
+      default:true
+    },
+    showDeleteBtn:{
+      type:Boolean,
+      default:true
+    },
+    showEditBtn:{
+      type:Boolean,
+      default:true
+    }
+    },
   data(){
     return {
-      "images":[
-        {
-            "itemImageSrc": "demo/images/galleria/galleria1.jpg",
-            "thumbnailImageSrc": "demo/images/galleria/galleria1s.jpg",
-            "alt": "Description for Image 1",
-            "title": "Title 1"
+      selectedArray:[],
+        search: '',
+        expanded:[],
+        footerProps: {'items-per-page-options': [5, 10,15, 100]},
+        options: {
+          page:1,
+          itemsPerPage:5,
         },
-        {
-            "itemImageSrc": "demo/images/galleria/galleria2.jpg",
-            "thumbnailImageSrc": "demo/images/galleria/galleria2s.jpg",
-            "alt": "Description for Image 2",
-            "title": "Title 2"
-        },
-        {
-            "itemImageSrc": "demo/images/galleria/galleria3.jpg",
-            "thumbnailImageSrc": "demo/images/galleria/galleria3s.jpg",
-            "alt": "Description for Image 3",
-            "title": "Title 3"
-        },
-        {
-            "itemImageSrc": "demo/images/galleria/galleria4.jpg",
-            "thumbnailImageSrc": "demo/images/galleria/galleria4s.jpg",
-            "alt": "Description for Image 4",
-            "title": "Title 4"
-        },
-        {
-            "itemImageSrc": "demo/images/galleria/galleria5.jpg",
-            "thumbnailImageSrc": "demo/images/galleria/galleria5s.jpg",
-            "alt": "Description for Image 5",
-            "title": "Title 5"
-        },
-        {
-            "itemImageSrc": "demo/images/galleria/galleria6.jpg",
-            "thumbnailImageSrc": "demo/images/galleria/galleria6s.jpg",
-            "alt": "Description for Image 6",
-            "title": "Title 6"
-        },
-        {
-            "itemImageSrc": "demo/images/galleria/galleria7.jpg",
-            "thumbnailImageSrc": "demo/images/galleria/galleria7s.jpg",
-            "alt": "Description for Image 7",
-            "title": "Title 7"
-        },
-        {
-            "itemImageSrc": "demo/images/galleria/galleria8.jpg",
-            "thumbnailImageSrc": "demo/images/galleria/galleria8s.jpg",
-            "alt": "Description for Image 8",
-            "title": "Title 8"
-        },
-        {
-            "itemImageSrc": "demo/images/galleria/galleria9.jpg",
-            "thumbnailImageSrc": "demo/images/galleria/galleria9s.jpg",
-            "alt": "Description for Image 9",
-            "title": "Title 9"
-        },
-        {
-            "itemImageSrc": "demo/images/galleria/galleria10.jpg",
-            "thumbnailImageSrc": "demo/images/galleria/galleria10s.jpg",
-            "alt": "Description for Image 10",
-            "title": "Title 10"
-        },
-        {
-            "itemImageSrc": "demo/images/galleria/galleria11.jpg",
-            "thumbnailImageSrc": "demo/images/galleria/galleria11s.jpg",
-            "alt": "Description for Image 11",
-            "title": "Title 11"
-        },
-        {
-            "itemImageSrc": "demo/images/galleria/galleria12.jpg",
-            "thumbnailImageSrc": "demo/images/galleria/galleria12s.jpg",
-            "alt": "Description for Image 12",
-            "title": "Title 12"
-        },
-        {
-            "itemImageSrc": "demo/images/galleria/galleria13.jpg",
-            "thumbnailImageSrc": "demo/images/galleria/galleria13s.jpg",
-            "alt": "Description for Image 13",
-            "title": "Title 13"
-        },
-        {
-            "itemImageSrc": "demo/images/galleria/galleria14.jpg",
-            "thumbnailImageSrc": "demo/images/galleria/galleria14s.jpg",
-            "alt": "Description for Image 14",
-            "title": "Title 14"
-        },
-        {
-            "itemImageSrc": "demo/images/galleria/galleria15.jpg",
-            "thumbnailImageSrc": "demo/images/galleria/galleria15s.jpg",
-            "alt": "Description for Image 15",
-            "title": "Title 15"
-        }
-    ]
-    }
-  }
-}
 
+    }
+  },
+  watch:{
+       options: {
+        handler () {
+            this.$emit("handle-options",this.options,this.search)
+        },
+        deep: true,
+        },
+
+        search: _.debounce(function(){
+           this.options.page=1;
+           this.$emit("handle-options",this.options,this.search)
+        }, 300)
+
+  },
+  methods:{
+        itemselected(selection){
+           this.$emit('clicked-row',selection.item)
+           console.log(selection.item)
+        },
+        rowClick(item, row){
+         //row.select(true);
+        },
+        loadDetails(val){
+          this.$emit('row-click', val.item)
+        },
+
+        editItem(val){
+            this.$emit('clicked-edit', val)
+        },
+        deleteItem(val){
+            this.$emit('clicked-delete', val)
+        },
+        detItem(val){
+          this.$emit('clicked-detail', val)
+        }
+    }
+}
 </script>
