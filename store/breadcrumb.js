@@ -1,7 +1,7 @@
 /*eslint-disable*/
 import Vue from 'vue';
 export const state = () => ({
-  breadcrumb: {},
+  breadcrumb: [],
 });
 
 export const mutations = {
@@ -16,6 +16,7 @@ export const actions = {
       const response = await this.$entegraApi.$get(`/product_categories/${categoryId}`);
       const breadcrumb =  await generateBreadcrumbs(response.original);
       commit('setBreadcrumb', breadcrumb);
+      return response.original.children;
     } catch (error) {
       console.error('Error fetching breadcrumb:', error);
     }

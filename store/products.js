@@ -25,7 +25,7 @@ export const actions = {
       var params = new URLSearchParams();
       params.append("page", request.page);
       params.append("per_page",request.per_page);
-      params.append("search", request.arama);
+      params.append("search", request.search);
 
 
       var gidecek = {

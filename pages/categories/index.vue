@@ -29,62 +29,30 @@
     </Modals>
     <Breadcrumb :home="home" :model="items" />
     <br>
-    <v-card
-      elevation="0"
-      outlined
-    >
-      <v-card-title class="white--text primary " style="font-size:16px;">
-        Kategoriler
-        <v-spacer />
-        <v-btn
-          color="white"
-          class="text--primary"
-          fab
-          small
-          dense
-          @click="showModal"
-        >
-          <v-icon>mdi-plus</v-icon>
-        </v-btn>
-      </v-card-title>
-      <v-divider />
-      <Container
-        drag-handle-selector=".column-drag-handle"
-        lock-axis="y"
-        :drop-placeholder="dropPlaceholderOptions"
-        @drop="onDrop"
-      >
-        <Draggable v-for="category in mycategories" :key="category.id">
-          <div class="draggable-item pt-5 pb-5">
-            <span class="column-drag-handle" style="float:left; padding:0 10px;"><v-icon color="red" class="handle mt-0">mdi-cursor-move</v-icon></span>
-            <span> <nuxt-link :to="`/categories/${category.id}`"> {{ category.name }}</nuxt-link></span>
-            <span style="float:right;padding-right:10px;">
-              <v-icon color="gray" class="handle mt-0" @click="clickEditCategory(category)">mdi-pencil</v-icon>
-              <v-icon color="gray" class="handle mt-0" @click="clickDeleteCategory(category.id)">mdi-delete</v-icon></nuxtlink></span>
-          </div>
-        </Draggable>
-      </Container>
-    </v-card>
+    <CategoryList
+      :items="mycategories"
+      :loading="loading"
+      @clicked-new="showModal"
+      @clicked-edit="clickEditCategory"
+      @clicked-delete="clickDeleteCategory"
+      @on-drop="onDrop"
+    />
   </v-card>
 </template>
 <script>
 /*eslint-disable*/
 import Breadcrumb from 'primevue/breadcrumb';
 import { mapState,mapGetters,mapActions,mapMutations } from "vuex";
-import { Container, Draggable } from "vue-smooth-dnd";
+import CategoryList from '~/components/CategoryList.vue';
 import { applyDrag, generateItems } from '../../src/utils'
 export default {
-components: { Container, Draggable },
+components: {CategoryList },
   data() {
         return {
+          loading:false,
           categoryValid:false,
           categoryName:'',
           status:null,
-          dropPlaceholderOptions: {
-                className: 'drop-preview',
-                animationDuration: '150',
-                showOnTop: true,
-            },
             home: {icon: 'pi pi-home', to: '/categories'},
             items: [],
             MdlText:"Kategori Ekle",
@@ -97,9 +65,11 @@ components: { Container, Draggable },
         }
   },
   async created() {
-       await this.getCategories().then(()=>{
-       //  this.audit_sections=this.sections;
-       });
+      this.loading=true;
+      await this.getMainCategories().then(()=>{
+        this.loading=false;
+        this.parent_id=0;
+      });
     },
   computed:{
   mycategories: {
@@ -110,7 +80,7 @@ components: { Container, Draggable },
           this.$store.commit('categories/SET_CATEGORIES', value)
         },
   },
-   ...mapState({
+  ...mapState({
         categories : state=> state.categories.categories,
       }),
 },
@@ -123,13 +93,6 @@ methods:{
         editCategory:'categories/editCategory',
         deleteCategory:'categories/deleteCategory',
         }),
-    async getCategories(){
-      this.loading=true;
-      await this.getMainCategories().then(()=>{
-        this.loading=false;
-        this.parent_id=0;
-      });
-    },
     showModal(){
        this.$refs.modals.dialog = true;
        this.status='new';

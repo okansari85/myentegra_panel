@@ -6,22 +6,14 @@
         Ürün Arama
       </v-toolbar-title>
     </v-toolbar>
-    <SearchProducts
+    <ProductDataTable
       :headers="headers"
       :items="getallproducts"
+      :total-records="getproductscount"
       :loading="loading"
-      :items-length="getproductscount"
-      :title="datatitle"
-      :slots="slots"
-      :keyOfItem="keyItem"
       @handle-options="handleOptions"
-    >
-      <template v-slot:tehlike_sinifi="{ degisken }">
-        <v-chip :color="getColor(degisken.tehlike_sinifi)" small dark label>
-          {{ degisken.tehlike_sinifi }}
-        </v-chip>
-      </template>
-    </SearchProducts>
+      :rows="rows"
+    />
   </v-card>
 </template>
 <script>
@@ -37,7 +29,6 @@ export default {
       products: (state) => state.products.products,
     }),
     ...mapGetters({
-      // you won't need to destructure if
       getproductscount: "products/getproductscount",
       getproductsperpage: "products/getproductsperpage",
       getallproducts: "products/getallproducts",
@@ -47,11 +38,12 @@ export default {
     ...mapActions({
       getProducts: "products/getProducts",
     }),
-    handleOptions(options, search) {
+    handleOptions(options) {
+      console.log(options);
       let obj = {
-        arama: search,
-        page: options.page,
-        per_page: options.itemsPerPage,
+        page: options.page+1,
+        per_page: options.rows,
+        search: options.filters['global'].value ? options.filters["global"].value : "",
       };
       this.loading = true;
       this.getProducts(obj).then((result) => {
@@ -63,13 +55,9 @@ export default {
   },
   data() {
     return {
-      arama: "",
+      rows:5,
       headers: [
-        { text: "ÜRÜN KODU", value: "productCode", sortable: false },
-        { text: "FİYAT", value: "price", sortable: false },
-        { text: "STOK", value: "price", sortable: false },
-        { text: "DESİ", value: "desi", sortable: false },
-        {text: 'Actions', value: 'actions', sortable: false }
+      {field: 'productTitle', header: 'ÜRÜN'},
       ],
       datatitle: "Ürünler",
       loading: true,

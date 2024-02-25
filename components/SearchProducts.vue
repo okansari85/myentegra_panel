@@ -77,7 +77,7 @@
 /*eslint-disable*/
 import _ from 'lodash';
 export default {
-  props:{
+props:{
     headers: {
       type: Array,
       default: null
@@ -146,7 +146,7 @@ export default {
       type:Boolean,
       default:true
     }
-    },
+  },
   data(){
     return {
       selectedArray:[],

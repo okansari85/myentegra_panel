@@ -57,7 +57,7 @@ export default {
   ],
 
   primevue: {
-    components: ["Menubar","InputText","Button","Galleria","Message","BreadCrumb"]
+    components: ["Menubar","InputText","Button","Galleria","Message","BreadCrumb","Datatable","Column"]
   },
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
