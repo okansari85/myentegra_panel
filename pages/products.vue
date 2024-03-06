@@ -55,9 +55,11 @@ export default {
   },
   data() {
     return {
-      rows:5,
+      rows:10,
       headers: [
       {field: 'productTitle', header: 'ÜRÜN'},
+      {field: 'productCode', header: 'Stok'},
+      {field: 'stock', header: 'Stok'},
       ],
       datatitle: "Ürünler",
       loading: true,
