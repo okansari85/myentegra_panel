@@ -89,12 +89,6 @@
           <template v-slot:activator>
             <v-list-item-title>N11</v-list-item-title>
           </template>
-          <v-list-item
-              link
-              to="/kategori_komisyonlari"
-            >
-              <v-list-item-title>Kategori Komisyonları</v-list-item-title>
-            </v-list-item>
             <v-list-item
               link
               to="/kargo_fiyatlari"

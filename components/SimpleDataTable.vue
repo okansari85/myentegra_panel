@@ -1,28 +1,26 @@
 <template>
-<v-card eager class="mx-auto" max-width="90%" style="margin-top: -64px;">
-    <v-toolbar flat>
-      <v-spacer />
-      <v-text-field
-        eager
-        append-icon="mdi-magnify"
-        label="Arama"
-        single-line
-        clearable
-        hide-details
-      />
-      <v-btn icon>
-        <v-icon>mdi-dots-vertical</v-icon>
-      </v-btn>
-    </v-toolbar>
-    <v-divider />
+<div>
+<v-card eager class="mx-auto" style="margin-top:-34px" max-width="90%" flat>
+    <Toolbar class="mb-4">
+        <template #start>
+            <Button label="Kargo Fiyatlarını Güncelle" icon="pi pi-plus" class="p-button-success mr-2"/>
+        </template>
+        <template #end>
+            <Button label="Export" icon="pi pi-upload" class="p-button-help"  />
+        </template>
+    </Toolbar>
+</v-card>
+<v-card eager class="mx-auto" max-width="90%">
     <DataTable :value="items" responsiveLayout="scroll">
     <Column v-for="col of columns" :field="col.field" :header="col.header" :key="col.field"></Column>
     </DataTable>
 </v-card>
+</div>
 </template>
 <script>
 /*eslint-disable*/
 import DataTable from 'primevue/datatable';
+
 export default{
     props : {
         columns:{
@@ -36,3 +34,14 @@ export default{
     }
 }
 </script>
+<style>
+.table-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    @media screen and (max-width: 960px) {
+        align-items: start;
+	}
+}
+</style>

@@ -1,6 +1,6 @@
 <template>
  <v-card flat>
-    <v-toolbar color="primary" dark extended extension-height="64" flat>
+    <v-toolbar color="primary" dark extended extension-height="63" flat>
       <v-icon>mdi-magnify</v-icon>
       <v-toolbar-title style="margin-left:10px;">
         N11 Kargo Fiyatları
