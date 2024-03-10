@@ -70,7 +70,7 @@ components: {CategoryList },
         this.loading=false;
         this.parent_id=0;
       });
-    },
+  },
   computed:{
   mycategories: {
         get() {
