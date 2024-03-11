@@ -53,11 +53,12 @@ export default {
     // https://go.nuxtjs.dev/content
     '@nuxt/content',
     '@nuxtjs/auth-next',
-    'primevue/nuxt'
+    'primevue/nuxt',
+    'vue-sweetalert2/nuxt'
   ],
 
   primevue: {
-    components: ["Menubar","InputText","Button","Galleria","Message","BreadCrumb","Datatable","Column","Card","Toolbar"]
+    components: ["Menubar","InputText","Button","Galleria","Message","BreadCrumb","Datatable","Column","Card","Toolbar","Dialog","Toast"]
   },
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
