@@ -21,6 +21,22 @@ export default{
             type: Array,
             default: function () { return [] }
         },
+        lazy: {
+            type:Boolean,
+            defalut:false
+        },
+        loading:{
+            type:Boolean,
+            default:false
+        },
+        totalRecords:{
+            type:Number,
+            default:0
+        },
+        rows:{
+            type: Number,
+            default:10,
+        }
     }
 }
 </script>

@@ -95,6 +95,12 @@
             >
               <v-list-item-title>Kargo Fiyat Listesi</v-list-item-title>
             </v-list-item>
+            <v-list-item
+              link
+              to="/komisyon_oranlari"
+            >
+              <v-list-item-title>Komisyon Oranları</v-list-item-title>
+            </v-list-item>
           </v-list-group>
         </v-list>
       </v-navigation-drawer>
