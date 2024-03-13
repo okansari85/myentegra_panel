@@ -1,96 +1,145 @@
 <template>
+  <div>
     <v-card flat>
        <v-toolbar color="primary" dark extended extension-height="63" flat>
          <v-icon>mdi-magnify</v-icon>
          <v-toolbar-title style="margin-left:10px;">
-           N11 Kargo Fiyatları
+           N11 Komisyon Oranları
          </v-toolbar-title>
        </v-toolbar>
        <v-card eager class="mx-auto" style="margin-top:-34px" max-width="90%" flat>
-       <Toast />
        <Toolbar class="mb-4">
            <template #start>
                <Button
                @click="openDialog"
-               label="Kargo Fiyatlarını Güncelle"
+               label="Komisyon oranlarını güncelle"
                icon="pi pi-plus"
                class="p-button-success mr-2"/>
            </template>
        </Toolbar>
        </v-card>
-       <SimpleDataTable
-       :columns="columns"
-       :items="cargoPrices"
-       />
        <Dialog :visible.sync="showDialog" :styles="{width: '450px'}" header="Confirm" :modal="true">
        <div class="confirmation-content">
            <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem" />
-           <span >Kargo fiyat listesini güncellemek ister misiniz?</span>
+           <span >Komisyon oranlarını güncellemek ister misiniz?</span>
        </div>
        <template #footer>
-           <Button label="Hayır" icon="pi pi-times" class="p-button-text" @click="showDialog = false"/>
-           <Button label="Evet" icon="pi pi-check" class="p-button-text" @click="confirmDialog" />
+        <Button label="Hayır"
+        icon="pi pi-times"
+        class="p-button-text"
+        @click="showDialog = false"
+        :disabled="loading"/>
+        <Button label="Evet"
+        icon="pi pi-check"
+        class="p-button-text"
+        @click="confirmDialog"
+        :loading="loading"
+        :disabled="loading"/>
        </template>
      </Dialog>
      </v-card>
+     <VuetifyDataTable
+        :headers="headers"
+        :items="getallcomissions"
+        :loading="loading"
+        :items-length="getcomissionscount"
+        @handle-options="handleOptions"
+        :title="datatitle"
+        @clicked-delete="clickedDelete"
+        @clicked-edit="clickedEdit"
+        ref="dt"
+        :keyOfItem="keyItem"
+        />
+      </div>
    </template>
 <script>
 /*eslint-disable*/
-import { mapState,mapGetters,mapActions,mapMutations } from "vuex";
-import Toast from "primevue/toast";
-import ToastService from "primevue/toastservice";
+import { mapState,mapGetters,mapActions } from "vuex";
+import Vue from "vue";
    export default {
-     async created() {
-         this.loading=true;
-         await this.getN11CargoPrices().then(()=>{
-           this.loading=false;
-         });
-     },
-     data(){
-       return {
-          loading:false,
-          messages: [],
-          columns: [
-               {field: 'desi', header: 'Desi'},
-               {field: 'yk_price', header: 'Yurtiçi'},
-               {field: 'aras_price', header: 'Aras'},
-               {field: 'ptt_price', header: 'PTT'},
-               {field: 'mng_price', header: 'MNG'},
-               {field: 'surat_price', header: 'Sürat'},
-               {field: 'sendeo_price', header: 'Sendeo'},
-           ],
-           showDialog: false,
-   
-       }
-     },
      computed:{
-     ...mapState({
-           cargoPrices : state=> state.n11CargoPrices.cargoPrices,
+         ...mapState({
+          comissions : state=> state.n11Comission.comissions,
          }),
+         ...mapGetters({
+          getcomissionscount: "n11Comission/getcomissionscount",
+          getcommissionperpage: "n11Comission/getcommissionperpage",
+          getallcomissions: "n11Comission/getallcomissions",
+        }),
      },
      methods:{
        ...mapActions(
-           {
-             getN11CargoPrices:'n11CargoPrices/getN11CargoPrices',
-           }),
+          {
+            getComissions:'n11Comission/getComissions',
+            getComissionsFromN11:'n11Comission/getComissionsFromN11',
+         }),
+         handleOptions(options, search) {
+            let obj = {
+              arama: search,
+              page: options.page,
+              per_page: options.itemsPerPage,
+            };
+            this.loading = true;
+            this.getComissions(obj).then((result) => {
+              this.loading = false;
+            });
+          },
          confirmDialog(){
            this.loading=true;
-           this.getN11CargoPrices().then(()=>{
-           this.loading=false;
-           this.showDialog = false;
-           this.$swal({
-             icon: 'success',
-             title: 'Güncellendi',
-             showConfirmButton: false,
-             timer: 1500
-           });
-           //this.$toast.add({severity:'success', summary: 'Success Message', detail:'Message Content', group: 'br', life: 1000});
+           this.getComissionsFromN11().then(()=>{
+            this.showDialog = false;
+                  this.$swal({
+                    icon: 'success',
+                    title: 'Güncellendi',
+                    showConfirmButton: false,
+                    timer: 1500
+                  });
+                  this.handleOptions(this.$refs.dt.options, "");
            });
          },
          openDialog() {
                this.showDialog = true;
          },
-     }
-   
+         clickedEdit(val) {},
+         clickedDelete(val) {},
+         
+     },
+     data(){
+            return {
+                messages: [],
+                showDialog: false,
+                search: "",
+                  headers: [
+                    { text: "Kategori Adı", value: "category_name", sortable: false },
+                    { text: "Komisyon Oranı", value: "komsiyon_orani", sortable: false },
+                    { text: "Pazarlama Hizmet Oranı", value: "pazarlama_hizmet_orani", sortable: false },
+                    { text: "Pazaryeri Hizmet Oranı", value: "pazaryeri_hizmet_orani", sortable: false },
+                    { text: "N11 Kategori ID", value: "n11_category_id", sortable: false },
+                  ],
+                  datatitle: "N11 Komisyon Oranları",
+                  loading: false,
+                  keyItem: "id",
+        
+            }
+        },
    }
    </script>
+   <style>
+   .searchBtn {
+     background-color: blue;
+     border-radius: 0 4px 4px 0;
+     width: 100%;
+   }
+   .custom .v-input__append-inner {
+     margin: 0 !important;
+     padding: 0 !important;
+     width: 20%;
+     height: 100%;
+   }
+   .custom .v-input__slot {
+     padding-right: 0 !important;
+   }
+   .theme--light.v-btn {
+     color: white;
+   }
+   </style>

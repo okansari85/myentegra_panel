@@ -25,11 +25,20 @@
     <Dialog :visible.sync="showDialog" :styles="{width: '450px'}" header="Confirm" :modal="true">
     <div class="confirmation-content">
         <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem" />
-        <span >Kargo fiyat listesini güncellemek ister misiniz?</span>
+        <span >Bu istek N11 'e bağlanarak kargo fiyatlarını güncelleyecektir ? </span>
     </div>
     <template #footer>
-        <Button label="Hayır" icon="pi pi-times" class="p-button-text" @click="showDialog = false"/>
-        <Button label="Evet" icon="pi pi-check" class="p-button-text" @click="confirmDialog" />
+        <Button label="Hayır"
+        icon="pi pi-times"
+        class="p-button-text"
+        @click="showDialog = false"
+        :disabled="loading"/>
+        <Button label="Evet"
+        icon="pi pi-check"
+        class="p-button-text"
+        @click="confirmDialog"
+        :loading="loading"
+        :disabled="loading"/>
     </template>
   </Dialog>
   </v-card>
@@ -72,10 +81,11 @@ export default {
     ...mapActions(
         {
           getN11CargoPrices:'n11CargoPrices/getN11CargoPrices',
+          getCargoPriceFromN11:'n11CargoPrices/getCargoPriceFromN11',
         }),
       confirmDialog(){
         this.loading=true;
-        this.getN11CargoPrices().then(()=>{
+        this.getCargoPriceFromN11().then(()=>{
         this.loading=false;
         this.showDialog = false;
         this.$swal({

@@ -9,11 +9,17 @@ export const mutations = {
     },
   }
 export const actions = {
-    async getN11CargoPrices({commit},request){
+  async getN11CargoPrices({commit},request){
      return await this.$entegraApi.$get('/getN11CargoPrices').then(res=>{
         commit('SET_N11_CARGO_PRICES', res)
         return res;
-     })
+     })  
   },
+  async getCargoPriceFromN11({commit},request){
+    return await this.$entegraApi.$get('/getCargoPriceFromN11').then(res=>{
+       commit('SET_N11_CARGO_PRICES', res.data)
+       return res.data;
+    })  
+ },
 }
   
