@@ -41,7 +41,7 @@ export default {
     // https://go.nuxtjs.dev/eslint
     '@nuxtjs/eslint-module',
     // https://go.nuxtjs.dev/vuetify
-    '@nuxtjs/vuetify'
+    '@nuxtjs/vuetify',
   ],
 
   // Modules: https://go.nuxtjs.dev/config-modules
@@ -58,7 +58,7 @@ export default {
   ],
 
   primevue: {
-    components: ["Menubar","InputText","Button","Galleria","Message","BreadCrumb","Datatable","Column","Card","Toolbar","Dialog","Toast"]
+    components: ["Menubar","InputText","Button","Galleria","Message","BreadCrumb","Datatable","Column","Card","Toolbar","Dialog","Toast","Chips","InputMask"]
   },
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios

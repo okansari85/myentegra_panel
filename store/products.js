@@ -2,6 +2,7 @@
 import Vue from 'vue';
 export const state = () => ({
     products : [],
+    n11_product: [],
 })
 export const getters = {
   getallproducts(state){
@@ -18,6 +19,9 @@ export const mutations = {
   SET_PRODUCTS_WITH_PAGES(state,data){
       state.products=data
   },
+  SET_N11_PRODUCT(state,data){
+    state.n11_product=data
+},
 }
 export const actions = {
   async getProducts({commit},request){
@@ -37,7 +41,11 @@ export const actions = {
       commit('SET_PRODUCTS_WITH_PAGES', res.original)
       return res.original;
    })
-
-
-},
+  },
+  async getN11ProductBySellerCode({commit},sellercode){
+        return await this.$entegraApi.$get('/getN11ProductBySellerCode/'+sellercode).then(res=>{
+          commit('SET_N11_PRODUCT', res.product)
+          return res;
+       })
+  }
 }

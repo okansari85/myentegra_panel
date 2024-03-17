@@ -78,8 +78,9 @@
       </Column>
       <Column field="price" header="Kar" style="width: 20%">
         <template #body="slotProps">
-          <v-chip color="green"
-style="border-radius: 8px;
+          <v-chip
+            color="green"
+            style="border-radius: 8px;
     font-size: 14px;
     height: 30px;color:white;"
 >
@@ -92,11 +93,94 @@ style="border-radius: 8px;
           <span> {{ formatCurrency(((slotProps.data.price * 1.1 *1.2)+30)*slotProps.data.profit_rate) }}</span>
         </template>
       </Column>
+      <Column :exportable="false" header="Pazaryerleri" :styles="{'min-width':'8rem'}">
+        <template #body="slotProps">
+          <GrayScaleImage
+            colored-image="n11_color_logo.png"
+            gray-scaled-image="n11_gray_logo.png"
+            width="40"
+            @handle-logo-click="handleLogo(slotProps.data,'n11')"
+          />
+          <GrayScaleImage
+            colored-image="hb_colored.png"
+            gray-scaled-image="hb_gray.png"
+            width="30"
+            @handle-logo-click="handleLogo(slotProps.data,'hb')"
+          />
+          <GrayScaleImage
+            colored-image="pazarama_colored.png"
+            gray-scaled-image="pazarama_grayed.png"
+            width="30"
+            @handle-logo-click="handleLogo(slotProps.data,'pazarama')"
+          />
+            </template>
+        </Column>
     </DataTable>
+    <Dialog :header="ModalHeader" :visible.sync="displayMaximizable" :container-style="{width: '50vw'}" :maximizable="true" :modal="true">
+      <v-list three-line v-if="displayMaximizable">
+      <template>
+        <v-list-item>
+        <div class="product_image" v-if="displayMaximizable">
+              <img :src="'http://localhost:8000/storage/files/' + this.clickedProduct.cover_image.url" class="flag" style="width: 100%;height: 100%;object-fit: contain;"/>
+        </div>
+          <v-list-item-content>
+            <v-list-item-title>{{this.clickedProduct.productTitle}}</v-list-item-title>
+            <v-list-item-subtitle>{{this.clickedProduct.productCode}} - {{this.clickedProduct.category.name}} </v-list-item-subtitle>
+          </v-list-item-content>
+        </v-list-item>
+      </template>
+    </v-list>
+    <v-divider/>
+    <div class="p-fluid formgrid grid pl-0 pr-0">
+      <div class="field col-12 pl-0 pr-0 mr-0" v-if="displayMaximizable">
+        <span class="p-input-icon-left">
+          <i class="pi pi-search" />
+          <InputText type="text" v-model="productCode" placeholder="Search" />
+      </span>
+    </div>
+    </div>
+    <v-divider/>
+    <v-card :loading="loading_single_product_card">
+      <v-list three-line>
+      <template v-if="soapresult">
+        <v-list-item>
+        <div class="product_image">
+              <img :src="n11_product.images.image.url" class="flag" style="width: 100%;height: 100%;object-fit: contain;"/>
+        </div>
+          <v-list-item-content>
+            <v-list-item-title>{{n11_product.title}}</v-list-item-title>
+            <v-list-item-subtitle>{{n11_product.productSellerCode}} - {{n11_product.category.fullName}} </v-list-item-subtitle>
+          </v-list-item-content>
+        </v-list-item>
+      </template>
+      <template v-else-if="!try_again">
+        <v-list-item>
+          <v-list-item-content>
+            <v-list-item-title>N11 ' den ürün çekiliyor</v-list-item-title>
+            <v-list-item-subtitle>Lütfen bu işlem sırasında sabırlı olunuz</v-list-item-subtitle>
+          </v-list-item-content>
+        </v-list-item>
+      </template>
+      <template v-else>
+        <v-list-item>
+          <v-list-item-content>
+            <v-list-item-title>{{ errorMessagge }}</v-list-item-title>
+          </v-list-item-content>
+          <Button label="Yeniden Dene" icon="pi pi-times" @click="handleLogo(clickedProduct,site)" class="p-button-text"/>
+        </v-list-item>
+      </template>
+    </v-list>
+    </v-card>
+    <template #footer>
+        <Button label="No" icon="pi pi-times" @click="closeMaximizable" class="p-button-text"/>
+        <Button label="Yes" icon="pi pi-check" @click="closeMaximizable" autofocus />
+    </template>
+    </Dialog>
   </v-card>
 </template>
 <script>
 /*eslint-disable*/
+import { mapState, mapGetters, mapActions, mapMutations } from "vuex";
 import {FilterMatchMode} from 'primevue/api';
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
@@ -124,6 +208,11 @@ props:{
     default:10,
   }
 },
+computed: {
+    ...mapState({
+      n11_product: (state) => state.products.n11_product,
+    }),
+  },
 data() {
         return {
             selectedCustomers: null,
@@ -132,6 +221,17 @@ data() {
             filters: {
                 'global': {value: '', matchMode: FilterMatchMode.CONTAINS},
             },
+            displayMaximizable: false,
+            ModalHeader:'',
+            clickedProduct:[],
+            productCode:'',
+            value:null,
+            loading_single_product:true,
+            loading_single_product_card:false,
+            try_again:false,
+            site:'',
+            soapresult:false,
+            errorMessagge:'',
 
         }
 },
@@ -148,6 +248,54 @@ mounted() {
         this.$emit("handle-options",this.lazyParams)
     },
     methods: {
+      ...mapActions({
+          getN11ProductBySellerCode: "products/getN11ProductBySellerCode",
+        }),
+        openMaximizable() {
+            this.displayMaximizable = true;
+        },
+        closeMaximizable() {
+            this.displayMaximizable = false;
+        },
+         handleLogo(data,site){
+
+          if (site=="n11"){
+            this.ModalHeader = "N11 Ürün Eşleştir"
+            this.site="n11"
+            this.productCode= data.productCode;
+            this.clickedProduct = data;
+            this.displayMaximizable = true;
+            this.loading_single_product=true;
+            this.loading_single_product_card=true
+            this.try_again=false
+            this.soapresult=false
+            this.getN11ProductBySellerCode(data.productCode).then((res)=>{
+                   this.loading_single_product=false
+                   this.loading_single_product_card=false
+                   if  (!res.result.status =='success' || res.length==0){
+                    this.try_again=true;
+                    this.soapresult=false;
+                   }
+                   else if (res.result.status=='failure'){
+                    this.soapresult=false;
+                    this.try_again=true;
+                    this.errorMessagge="Ürün Bulunamadı"
+                   }
+                   else if (res.result.status =='success'){
+                    this.soapresult=true;
+                   }
+
+            })
+           .catch((err)=>{
+                  this.errorMessagge="N11 ' den ürün çekerken bir hata oluştu"
+                  this.loading_single_product_card=false;
+                  this.try_again=true;
+                  this.soapresult=false;
+           });
+
+          }
+
+        },
         formatCurrency(value) {
             return value.toLocaleString('tr-TR', {style: 'currency', currency: 'TRY'});
         },
