@@ -47,5 +47,11 @@ export const actions = {
           commit('SET_N11_PRODUCT', res.product)
           return res;
        })
-  }
+  },
+   async matchProduct({commit},obj){
+    return await this.$entegraApi.$post('/matchN11Product',obj).then(res=>{
+      return res;
+   })
+    }
+
 }

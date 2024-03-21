@@ -96,22 +96,25 @@
       <Column :exportable="false" header="Pazaryerleri" :styles="{'min-width':'8rem'}">
         <template #body="slotProps">
           <GrayScaleImage
+            :ismarket-product-matched="slotProps.data.n11_product !=null"
             colored-image="n11_color_logo.png"
             gray-scaled-image="n11_gray_logo.png"
             width="40"
-            @handle-logo-click="handleLogo(slotProps.data,'n11')"
+            @handle-logo-click="clickedLogo(slotProps.data,'n11')"
           />
           <GrayScaleImage
+            :ismarket-product-matched="slotProps.data.hb_product !=null"
             colored-image="hb_colored.png"
             gray-scaled-image="hb_gray.png"
             width="30"
-            @handle-logo-click="handleLogo(slotProps.data,'hb')"
+            @handle-logo-click="clickedLogo(slotProps.data,'hb')"
           />
           <GrayScaleImage
+            :ismarket-product-matched="slotProps.data.pazarama_product !=null"
             colored-image="pazarama_colored.png"
             gray-scaled-image="pazarama_grayed.png"
             width="30"
-            @handle-logo-click="handleLogo(slotProps.data,'pazarama')"
+            @handle-logo-click="clickedLogo(slotProps.data,'pazarama')"
           />
             </template>
         </Column>
@@ -124,8 +127,8 @@
               <img :src="'http://localhost:8000/storage/files/' + this.clickedProduct.cover_image.url" class="flag" style="width: 100%;height: 100%;object-fit: contain;"/>
         </div>
           <v-list-item-content>
-            <v-list-item-title>{{this.clickedProduct.productTitle}}</v-list-item-title>
-            <v-list-item-subtitle>{{this.clickedProduct.productCode}} - {{this.clickedProduct.category.name}} </v-list-item-subtitle>
+            <v-list-item-title>{{ clickedProduct.productTitle }}</v-list-item-title>
+            <v-list-item-subtitle>{{ clickedProduct.productCode }} - {{ clickedProduct.category.name }} </v-list-item-subtitle>
           </v-list-item-content>
         </v-list-item>
       </template>
@@ -135,7 +138,7 @@
       <div class="field col-12 pl-0 pr-0 mr-0" v-if="displayMaximizable">
         <span class="p-input-icon-left">
           <i class="pi pi-search" />
-          <InputText type="text" v-model="productCode" placeholder="Search" />
+          <InputText type="text" v-model="productCode" placeholder="Search" @keyup.enter="handleLogo(productCode,site)" />
       </span>
     </div>
     </div>
@@ -148,8 +151,8 @@
               <img :src="n11_product.images.image.url" class="flag" style="width: 100%;height: 100%;object-fit: contain;"/>
         </div>
           <v-list-item-content>
-            <v-list-item-title>{{n11_product.title}}</v-list-item-title>
-            <v-list-item-subtitle>{{n11_product.productSellerCode}} - {{n11_product.category.fullName}} </v-list-item-subtitle>
+            <v-list-item-title> {{ n11_product.title }}</v-list-item-title>
+            <v-list-item-subtitle> {{ n11_product.productSellerCode }} - {{ n11_product.category.fullName }} </v-list-item-subtitle>
           </v-list-item-content>
         </v-list-item>
       </template>
@@ -166,14 +169,14 @@
           <v-list-item-content>
             <v-list-item-title>{{ errorMessagge }}</v-list-item-title>
           </v-list-item-content>
-          <Button label="Yeniden Dene" icon="pi pi-times" @click="handleLogo(clickedProduct,site)" class="p-button-text"/>
+          <Button label="Yeniden Dene" icon="pi pi-times" class="p-button-text" @click="handleLogo(productCode,site)" />
         </v-list-item>
       </template>
     </v-list>
     </v-card>
     <template #footer>
-        <Button label="No" icon="pi pi-times" @click="closeMaximizable" class="p-button-text"/>
-        <Button label="Yes" icon="pi pi-check" @click="closeMaximizable" autofocus />
+        <Button label="Vazgeç" icon="pi pi-times" class="p-button-text" @click="closeMaximizable" />
+        <Button label="Eşleştir" icon="pi pi-check" @click="handleMatch(n11_product,clickedProduct)" autofocus :disabled="eslestir_btn_disabled" />
     </template>
     </Dialog>
   </v-card>
@@ -226,12 +229,12 @@ data() {
             clickedProduct:[],
             productCode:'',
             value:null,
-            loading_single_product:true,
             loading_single_product_card:false,
             try_again:false,
             site:'',
             soapresult:false,
             errorMessagge:'',
+            eslestir_btn_disabled:true,
 
         }
 },
@@ -250,6 +253,7 @@ mounted() {
     methods: {
       ...mapActions({
           getN11ProductBySellerCode: "products/getN11ProductBySellerCode",
+          matchProduct : "products/matchProduct"
         }),
         openMaximizable() {
             this.displayMaximizable = true;
@@ -257,20 +261,36 @@ mounted() {
         closeMaximizable() {
             this.displayMaximizable = false;
         },
-         handleLogo(data,site){
+        handleMatch(n11_product,db_product){
+          let obj = {
+              n11_product: n11_product,
+              db_product: db_product,
+            };
+
+            this.matchProduct(obj).then((res) => {
+              //gelen kayıtlara ba
+            });
+
+        },
+        clickedLogo(data,site){
+          this.clickedProduct = data;
+          this.site=site;
+         // data.n11_product !=null ?
+          this.handleLogo(data.n11_product !=null ? data.n11_product.n11_product.productSellerCode : this.clickedProduct.productCode,site);
+          this.eslestir_btn_disabled=true
+        },
+        handleLogo(data,site){
 
           if (site=="n11"){
             this.ModalHeader = "N11 Ürün Eşleştir"
-            this.site="n11"
-            this.productCode= data.productCode;
-            this.clickedProduct = data;
+            this.productCode= data;
             this.displayMaximizable = true;
-            this.loading_single_product=true;
             this.loading_single_product_card=true
             this.try_again=false
             this.soapresult=false
-            this.getN11ProductBySellerCode(data.productCode).then((res)=>{
-                   this.loading_single_product=false
+            this.eslestir_btn_disabled=true
+
+            this.getN11ProductBySellerCode(data).then((res)=>{
                    this.loading_single_product_card=false
                    if  (!res.result.status =='success' || res.length==0){
                     this.try_again=true;
@@ -283,6 +303,7 @@ mounted() {
                    }
                    else if (res.result.status =='success'){
                     this.soapresult=true;
+                    this.eslestir_btn_disabled=false;
                    }
 
             })

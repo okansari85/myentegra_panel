@@ -1,10 +1,10 @@
 <template>
   <img
-    :src="imageSrc"
+    :src="ismarketProductMatched ? coloredImage : imageSrc"
     alt="Hover Image"
     :width="width"
     style="cursor: pointer; transition: opacity 0.5s ease;"
-    class="hover-opacity"
+    :class="ismarketProductMatched ? '' : 'hover-opacity'"
     @mouseover="changeImage(true)"
     @mouseout="changeImage(false)"
     @click="clickedLogo"
@@ -26,6 +26,10 @@ export default {
     coloredImage:{
       type:String,
       default:'',
+    },
+    ismarketProductMatched: {
+      type:Boolean,
+      default:false,
     }
   },
   data () {
@@ -35,7 +39,7 @@ export default {
   },
   methods: {
     changeImage (colored) {
-      this.imageSrc = colored  ? this.coloredImage : this.grayScaledImage;
+        this.imageSrc = colored && this.ismarketProductMatched!=true  ? this.coloredImage : this.grayScaledImage;
     },
     clickedLogo(){
       this.$emit("handle-logo-click");
