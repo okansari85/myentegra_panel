@@ -1,18 +1,12 @@
 <template>
   <v-card flat>
-    <v-toolbar color="primary" dark extended extension-height="64" flat>
-      <v-icon>mdi-magnify</v-icon>
-      <v-toolbar-title style="margin-left:10px;">
-        Ürün Arama
-      </v-toolbar-title>
-    </v-toolbar>
     <ProductDataTable
       :headers="headers"
       :items="getallproducts"
       :total-records="getproductscount"
       :loading="loading"
-      @handle-options="handleOptions"
       :rows="rows"
+      @handle-options="handleOptions"
     />
   </v-card>
 </template>
@@ -48,6 +42,7 @@ export default {
       this.loading = true;
       this.getProducts(obj).then((result) => {
         this.loading = false;
+
       });
     },
     clickedEdit(val) {},

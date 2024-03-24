@@ -1,21 +1,46 @@
 <template>
-   <v-card eager class="mx-auto" max-width="90%" style="margin-top: -64px;">
-    <v-toolbar flat>
-      <v-spacer />
-      <v-text-field
-        v-model="filters['global'].value"
-        eager
-        append-icon="mdi-magnify"
-        label="Arama"
-        single-line
-        clearable
-        hide-details
-        @change="onFilter"
+  <div>
+    <v-card eager class="mx-auto mb-2" flat>
+      <ProgressBarComp
+       ref = "progressBarCompon"
       />
-      <v-btn icon>
-        <v-icon>mdi-dots-vertical</v-icon>
-      </v-btn>
-    </v-toolbar>
+    </v-card>
+  <v-card eager class="mx-auto" flat>
+       <Toolbar class="mb-4">
+        <template #start>
+          <v-btn
+      class="mx-2"
+      fab
+      dark
+      x-small
+      color="primary"
+    >
+      <v-icon dark>
+       mdi-plus
+      </v-icon>
+    </v-btn>
+    <v-btn
+      class="mx-2"
+      fab
+      dark
+      x-small
+      color="primary"
+      @click="handleUpdateStockPrice()"
+    >
+      <v-icon dark>
+       mdi-update
+      </v-icon>
+    </v-btn>
+    </template>
+    <template #end>
+      <span class="p-input-icon-right">
+        <InputText type="text" v-model="filters['global'].value"  @change="onFilter" />
+        <i class="pi pi-search" />
+    </span>
+    </template>
+       </Toolbar>
+       </v-card>
+   <v-card eager class="mx-auto" style="">
     <v-divider />
     <DataTable
       :value="items"
@@ -180,6 +205,7 @@
     </template>
     </Dialog>
   </v-card>
+</div>
 </template>
 <script>
 /*eslint-disable*/
@@ -235,7 +261,6 @@ data() {
             soapresult:false,
             errorMessagge:'',
             eslestir_btn_disabled:true,
-
         }
 },
 
@@ -261,6 +286,9 @@ mounted() {
         closeMaximizable() {
             this.displayMaximizable = false;
         },
+        handleUpdateStockPrice(){
+          this.$refs.progressBarCompon.fetchProgress();
+        },
         handleMatch(n11_product,db_product){
           let obj = {
               n11_product: n11_product,
@@ -269,6 +297,7 @@ mounted() {
 
             this.matchProduct(obj).then((res) => {
               //gelen kayıtlara ba
+              this.$refs.progressBarCompon.findBatchID();
             });
 
         },
@@ -279,7 +308,7 @@ mounted() {
           this.handleLogo(data.n11_product !=null ? data.n11_product.n11_product.productSellerCode : this.clickedProduct.productCode,site);
           this.eslestir_btn_disabled=true
         },
-        handleLogo(data,site){
+        async handleLogo(data,site){
 
           if (site=="n11"){
             this.ModalHeader = "N11 Ürün Eşleştir"
@@ -290,7 +319,7 @@ mounted() {
             this.soapresult=false
             this.eslestir_btn_disabled=true
 
-            this.getN11ProductBySellerCode(data).then((res)=>{
+            await this.getN11ProductBySellerCode(data).then((res)=>{
                    this.loading_single_product_card=false
                    if  (!res.result.status =='success' || res.length==0){
                     this.try_again=true;
@@ -304,6 +333,7 @@ mounted() {
                    else if (res.result.status =='success'){
                     this.soapresult=true;
                     this.eslestir_btn_disabled=false;
+
                    }
 
             })
