@@ -149,6 +149,12 @@
             />
           </template>
         </Column>
+        <Column header="Islemler" :styles="{'min-width':'8rem'}">
+          <template #body="slotProps">
+            <Button icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2" @click="editProduct(slotProps.data)" />
+            <Button icon="pi pi-trash" class="p-button-rounded p-button-warning" @click="confirmDeleteProduct(slotProps.data)" />
+          </template>
+        </Column>
       </DataTable>
       <Dialog :header="ModalHeader" :visible.sync="displayMaximizable" :container-style="{width: '50vw'}" :maximizable="true" :modal="true">
         <v-list v-if="displayMaximizable" three-line>
