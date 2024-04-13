@@ -1,211 +1,217 @@
+<!-- eslint-disable vue/no-lone-template -->
 <template>
   <div>
+    <ProductForm
+      ref="productFormComp"
+      @on-product-save="onProductSave"
+    />
     <v-card eager class="mx-auto mb-2" flat>
       <ProgressBarComp
-       ref = "progressBarCompon"
+        ref="progressBarCompon"
       />
     </v-card>
-  <v-card eager class="mx-auto" flat>
-       <Toolbar class="mb-4">
+    <v-card eager class="mx-auto" flat>
+      <Toolbar class="mb-4">
         <template #start>
           <v-btn
-      class="mx-2"
-      fab
-      dark
-      x-small
-      color="primary"
-    >
-      <v-icon dark>
-       mdi-plus
-      </v-icon>
-    </v-btn>
-    <v-btn
-      class="mx-2"
-      fab
-      dark
-      x-small
-      color="primary"
-      @click="handleUpdateStockPrice()"
-    >
-      <v-icon dark>
-       mdi-update
-      </v-icon>
-    </v-btn>
-    </template>
-    <template #end>
-      <span class="p-input-icon-right">
-        <InputText type="text" v-model="filters['global'].value"  @change="onFilter" />
-        <i class="pi pi-search" />
-    </span>
-    </template>
-       </Toolbar>
-       </v-card>
-   <v-card eager class="mx-auto" style="">
-    <v-divider />
-    <DataTable
-      :value="items"
-      :lazy="true"
-      :paginator="true"
-      :rows="rows"
-      :loading="loading"
-      ref="dt"
-      dataKey="id"
-      :total-records="totalRecords"
-      @page="onPage($event)"
-      :rowHover="true"
-      :globalFilterFields="['productTitle']"
-      :filters.sync="filters"
-      @select-all-change="onSelectAllChange"
-      @row-select="onRowSelect"
-      :selection.sync="selectedCustomers"
-      @row-unselect="onRowUnselect"
-      :selectAll="selectAll"
-      showGridlines
-    >
-      <Column selection-mode="multiple" />
-      <Column field="productTitle" header="Ürün">
-        <template #body="slotProps">
-          <div class="product_container">
-            <div class="product_image">
-              <img :src="'http://localhost:8000/storage/files/' + slotProps.data.cover_image.url" :alt="slotProps.data.cover_image.url" class="flag" style="width: 100%;height: 100%;object-fit: contain;"/>
+            class="mx-2"
+            fab
+            dark
+            x-small
+            color="primary"
+            @click="clickNewProduct()"
+          >
+            <v-icon dark>
+              mdi-plus
+            </v-icon>
+          </v-btn>
+          <v-btn
+            class="mx-2"
+            fab
+            dark
+            x-small
+            color="primary"
+            @click="handleUpdateStockPrice()"
+          >
+            <v-icon dark>
+              mdi-update
+            </v-icon>
+          </v-btn>
+        </template>
+        <template #end>
+          <span class="p-input-icon-right">
+            <InputText v-model="filters['global'].value" type="text" @change="onFilter" />
+            <i class="pi pi-search" />
+          </span>
+        </template>
+      </Toolbar>
+    </v-card>
+    <v-card eager class="mx-auto" style="">
+      <v-divider />
+      <DataTable
+        ref="dt"
+        :value="items"
+        :lazy="true"
+        :paginator="true"
+        :rows="rows"
+        :loading="loading"
+        data-key="id"
+        :total-records="totalRecords"
+        :row-hover="true"
+        :global-filter-fields="['productTitle']"
+        :filters.sync="filters"
+        :selection.sync="selectedCustomers"
+        :select-all="selectAll"
+        show-gridlines
+        @page="onPage($event)"
+        @select-all-change="onSelectAllChange"
+        @row-select="onRowSelect"
+        @row-unselect="onRowUnselect"
+      >
+        <Column selection-mode="multiple" />
+        <Column field="productTitle" header="Ürün">
+          <template #body="slotProps">
+            <div class="product_container">
+              <div class="product_image">
+                <img :src="slotProps.data.cover_image.url" :alt="slotProps.data.cover_image.url" class="flag" style="width: 100%;height: 100%;object-fit: contain;">
               </div>
-            <div>
-              <span> {{ slotProps.data.productTitle }}</span>
+              <div>
+                <span> {{ slotProps.data.productTitle }}</span>
+              </div>
             </div>
-          </div>
-        </template>
-      </Column>
-      <Column field="productCode" header="Stok Kodu"  style="width: 20%"></Column>
-      <Column field="stock" header="STOK">
-        <template #body="slotProps">
-          <span> {{ slotProps.data.stock }}</span>
-        </template>
-      </Column>
-      <Column field="desi" header="Desi">
-        <template #body="slotProps">
-          <span> {{ slotProps.data.desi }}</span>
-        </template>
-      </Column>
-      <Column field="price" header="Fiyat" style="width: 20%">
-        <template #body="slotProps">
-          <span> {{ formatCurrency(slotProps.data.price * 1) }}</span>
-        </template>
-      </Column>
-      <Column field="price" header="Maliyet" style="width: 20%">
-        <template #body="slotProps">
-          <span> {{ formatCurrency((slotProps.data.price * 1.1 *1.2)+30) }}</span>
-        </template>
-      </Column>
-      <Column field="profit_rate" header="Kar Marjı" style="width: 20%">
-        <template #body="slotProps">
-          <span> {{ slotProps.data.profit_rate }}</span>
-        </template>
-      </Column>
-      <Column field="price" header="Kar" style="width: 20%">
-        <template #body="slotProps">
-          <v-chip
-            color="green"
-            style="border-radius: 8px;
+          </template>
+        </Column>
+        <Column field="productCode" header="Stok Kodu" style="width: 20%" />
+        <Column field="stock" header="STOK">
+          <template #body="slotProps">
+            <span> {{ slotProps.data.stock }}</span>
+          </template>
+        </Column>
+        <Column field="desi" header="Desi">
+          <template #body="slotProps">
+            <span> {{ slotProps.data.desi }}</span>
+          </template>
+        </Column>
+        <Column field="price" header="Fiyat" style="width: 20%">
+          <template #body="slotProps">
+            <span> {{ formatCurrency(slotProps.data.price * 1) }}</span>
+          </template>
+        </Column>
+        <Column field="price" header="Maliyet" style="width: 20%">
+          <template #body="slotProps">
+            <span> {{ formatCurrency((slotProps.data.price * 1.1 *1.2)+30) }}</span>
+          </template>
+        </Column>
+        <Column field="profit_rate" header="Kar Marjı" style="width: 20%">
+          <template #body="slotProps">
+            <span> {{ slotProps.data.profit_rate }}</span>
+          </template>
+        </Column>
+        <Column field="price" header="Kar" style="width: 20%">
+          <template #body="slotProps">
+            <v-chip
+              color="green"
+              style="border-radius: 8px;
     font-size: 14px;
     height: 30px;color:white;"
->
-            {{ formatCurrency( (((slotProps.data.price * 1.1 *1.2)+30)*slotProps.data.profit_rate)-((slotProps.data.price * 1.1 *1.2)+30)) }}
-          </v-chip>
-        </template>
-      </Column>
-      <Column field="price" header="Karlı Fiyat" style="width: 20%">
-        <template #body="slotProps">
-          <span> {{ formatCurrency(((slotProps.data.price * 1.1 *1.2)+30)*slotProps.data.profit_rate) }}</span>
-        </template>
-      </Column>
-      <Column :exportable="false" header="Pazaryerleri" :styles="{'min-width':'8rem'}">
-        <template #body="slotProps">
-          <GrayScaleImage
-            :ismarket-product-matched="slotProps.data.n11_product !=null"
-            colored-image="n11_color_logo.png"
-            gray-scaled-image="n11_gray_logo.png"
-            width="40"
-            @handle-logo-click="clickedLogo(slotProps.data,'n11')"
-          />
-          <GrayScaleImage
-            :ismarket-product-matched="slotProps.data.hb_product !=null"
-            colored-image="hb_colored.png"
-            gray-scaled-image="hb_gray.png"
-            width="30"
-            @handle-logo-click="clickedLogo(slotProps.data,'hb')"
-          />
-          <GrayScaleImage
-            :ismarket-product-matched="slotProps.data.pazarama_product !=null"
-            colored-image="pazarama_colored.png"
-            gray-scaled-image="pazarama_grayed.png"
-            width="30"
-            @handle-logo-click="clickedLogo(slotProps.data,'pazarama')"
-          />
-            </template>
+            >
+              {{ formatCurrency( (((slotProps.data.price * 1.1 *1.2)+30)*slotProps.data.profit_rate)-((slotProps.data.price * 1.1 *1.2)+30)) }}
+            </v-chip>
+          </template>
         </Column>
-    </DataTable>
-    <Dialog :header="ModalHeader" :visible.sync="displayMaximizable" :container-style="{width: '50vw'}" :maximizable="true" :modal="true">
-      <v-list three-line v-if="displayMaximizable">
-      <template>
-        <v-list-item>
-        <div class="product_image" v-if="displayMaximizable">
-              <img :src="'http://localhost:8000/storage/files/' + this.clickedProduct.cover_image.url" class="flag" style="width: 100%;height: 100%;object-fit: contain;"/>
+        <Column field="price" header="Karlı Fiyat" style="width: 20%">
+          <template #body="slotProps">
+            <span> {{ formatCurrency(((slotProps.data.price * 1.1 *1.2)+30)*slotProps.data.profit_rate) }}</span>
+          </template>
+        </Column>
+        <Column :exportable="false" header="Pazaryerleri" :styles="{'min-width':'8rem'}">
+          <template #body="slotProps">
+            <GrayScaleImage
+              :ismarket-product-matched="slotProps.data.n11_product !=null"
+              colored-image="n11_color_logo.png"
+              gray-scaled-image="n11_gray_logo.png"
+              width="40"
+              @handle-logo-click="clickedLogo(slotProps.data,'n11')"
+            />
+            <GrayScaleImage
+              :ismarket-product-matched="slotProps.data.hb_product !=null"
+              colored-image="hb_colored.png"
+              gray-scaled-image="hb_gray.png"
+              width="30"
+              @handle-logo-click="clickedLogo(slotProps.data,'hb')"
+            />
+            <GrayScaleImage
+              :ismarket-product-matched="slotProps.data.pazarama_product !=null"
+              colored-image="pazarama_colored.png"
+              gray-scaled-image="pazarama_grayed.png"
+              width="30"
+              @handle-logo-click="clickedLogo(slotProps.data,'pazarama')"
+            />
+          </template>
+        </Column>
+      </DataTable>
+      <Dialog :header="ModalHeader" :visible.sync="displayMaximizable" :container-style="{width: '50vw'}" :maximizable="true" :modal="true">
+        <v-list v-if="displayMaximizable" three-line>
+          <template id="okan">
+            <v-list-item>
+              <div v-if="displayMaximizable" class="product_image">
+                <img :src="clickedProduct.cover_image.url" class="flag" style="width: 100%;height: 100%;object-fit: contain;">
+              </div>
+              <v-list-item-content>
+                <v-list-item-title>{{ clickedProduct.productTitle }}</v-list-item-title>
+                <v-list-item-subtitle>{{ clickedProduct.productCode }} - {{ clickedProduct.category.name }} </v-list-item-subtitle>
+              </v-list-item-content>
+            </v-list-item>
+          </template>
+        </v-list>
+        <v-divider />
+        <div class="p-fluid formgrid grid pl-0 pr-0">
+          <div v-if="displayMaximizable" class="field col-12 pl-0 pr-0 mr-0">
+            <span class="p-input-icon-left">
+              <i class="pi pi-search" />
+              <InputText v-model="productCode" type="text" placeholder="Search" @keyup.enter="handleLogo(productCode,site)" />
+            </span>
+          </div>
         </div>
-          <v-list-item-content>
-            <v-list-item-title>{{ clickedProduct.productTitle }}</v-list-item-title>
-            <v-list-item-subtitle>{{ clickedProduct.productCode }} - {{ clickedProduct.category.name }} </v-list-item-subtitle>
-          </v-list-item-content>
-        </v-list-item>
-      </template>
-    </v-list>
-    <v-divider/>
-    <div class="p-fluid formgrid grid pl-0 pr-0">
-      <div class="field col-12 pl-0 pr-0 mr-0" v-if="displayMaximizable">
-        <span class="p-input-icon-left">
-          <i class="pi pi-search" />
-          <InputText type="text" v-model="productCode" placeholder="Search" @keyup.enter="handleLogo(productCode,site)" />
-      </span>
-    </div>
-    </div>
-    <v-divider/>
-    <v-card :loading="loading_single_product_card">
-      <v-list three-line>
-      <template v-if="soapresult">
-        <v-list-item>
-        <div class="product_image">
-              <img :src="n11_product.images.image.url" class="flag" style="width: 100%;height: 100%;object-fit: contain;"/>
-        </div>
-          <v-list-item-content>
-            <v-list-item-title> {{ n11_product.title }}</v-list-item-title>
-            <v-list-item-subtitle> {{ n11_product.productSellerCode }} - {{ n11_product.category.fullName }} </v-list-item-subtitle>
-          </v-list-item-content>
-        </v-list-item>
-      </template>
-      <template v-else-if="!try_again">
-        <v-list-item>
-          <v-list-item-content>
-            <v-list-item-title>N11 ' den ürün çekiliyor</v-list-item-title>
-            <v-list-item-subtitle>Lütfen bu işlem sırasında sabırlı olunuz</v-list-item-subtitle>
-          </v-list-item-content>
-        </v-list-item>
-      </template>
-      <template v-else>
-        <v-list-item>
-          <v-list-item-content>
-            <v-list-item-title>{{ errorMessagge }}</v-list-item-title>
-          </v-list-item-content>
-          <Button label="Yeniden Dene" icon="pi pi-times" class="p-button-text" @click="handleLogo(productCode,site)" />
-        </v-list-item>
-      </template>
-    </v-list>
+        <v-divider />
+        <v-card :loading="loading_single_product_card">
+          <v-list three-line>
+            <template v-if="soapresult">
+              <v-list-item>
+                <div class="product_image">
+                  <img :src="n11_product.images.image.url" class="flag" style="width: 100%;height: 100%;object-fit: contain;">
+                </div>
+                <v-list-item-content>
+                  <v-list-item-title> {{ n11_product.title }}</v-list-item-title>
+                  <v-list-item-subtitle> {{ n11_product.productSellerCode }} - {{ n11_product.category.fullName }} </v-list-item-subtitle>
+                </v-list-item-content>
+              </v-list-item>
+            </template>
+            <template v-else-if="!try_again">
+              <v-list-item>
+                <v-list-item-content>
+                  <v-list-item-title>N11 ' den ürün çekiliyor</v-list-item-title>
+                  <v-list-item-subtitle>Lütfen bu işlem sırasında sabırlı olunuz</v-list-item-subtitle>
+                </v-list-item-content>
+              </v-list-item>
+            </template>
+            <template v-else>
+              <v-list-item>
+                <v-list-item-content>
+                  <v-list-item-title>{{ errorMessagge }}</v-list-item-title>
+                </v-list-item-content>
+                <Button label="Yeniden Dene" icon="pi pi-times" class="p-button-text" @click="handleLogo(productCode,site)" />
+              </v-list-item>
+            </template>
+          </v-list>
+        </v-card>
+        <template #footer>
+          <Button label="Vazgeç" icon="pi pi-times" class="p-button-text" @click="closeMaximizable" />
+          <Button label="Eşleştir" icon="pi pi-check" autofocus :disabled="eslestir_btn_disabled" @click="handleMatch(n11_product,clickedProduct)" />
+        </template>
+      </Dialog>
     </v-card>
-    <template #footer>
-        <Button label="Vazgeç" icon="pi pi-times" class="p-button-text" @click="closeMaximizable" />
-        <Button label="Eşleştir" icon="pi pi-check" @click="handleMatch(n11_product,clickedProduct)" autofocus :disabled="eslestir_btn_disabled" />
-    </template>
-    </Dialog>
-  </v-card>
-</div>
+  </div>
 </template>
 <script>
 /*eslint-disable*/
@@ -384,6 +390,13 @@ mounted() {
         },
         onRowUnselect() {
             this.selectAll = false;
+        },
+        clickNewProduct(){
+          this.$refs.productFormComp.showModal();
+        },
+        onProductSave(){
+          console.log("onsave");
+          this.$emit("handle-options",this.lazyParams)
         }
 }
 

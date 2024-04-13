@@ -41,7 +41,7 @@ export default {
     // https://go.nuxtjs.dev/eslint
     '@nuxtjs/eslint-module',
     // https://go.nuxtjs.dev/vuetify
-    '@nuxtjs/vuetify',
+    ['@nuxtjs/vuetify', {treeShake: true}]
   ],
 
   // Modules: https://go.nuxtjs.dev/config-modules
@@ -54,11 +54,28 @@ export default {
     '@nuxt/content',
     '@nuxtjs/auth-next',
     'primevue/nuxt',
-    'vue-sweetalert2/nuxt'
+    'vue-sweetalert2/nuxt',
+    'vue2-editor/nuxt',
+    ['v-currency-field/nuxt-treeshaking', {
+      locale: 'tr-TR',
+      decimalLength: 2,
+      autoDecimalMode: false,
+      min: null,
+      max: null,
+      defaultValue: 0,
+      valueAsInteger: false,
+      allowNegative: false
+    }],
   ],
 
   primevue: {
-    components: ["Menubar","InputText","Button","Galleria","Message","BreadCrumb","Datatable","Column","Card","Toolbar","Dialog","Toast","Chips","InputMask","ProgressBar"]
+    components: [
+    "Menubar",
+    "InputText",
+    "InputNumber",
+    "Button",
+    "Galleria",
+    "Message","BreadCrumb","Datatable","Column","Card","Toolbar","Dialog","Toast","Chips","InputMask","ProgressBar","CascadeSelect" ]
   },
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
@@ -123,7 +140,10 @@ export default {
       }
     },
     plugins: [
-      '~/plugins/axios.js'
+      '~/plugins/axios.js',
+      '~/plugins/vue-tree-select.js',
+      '~/plugins/vue-mask.js',
+      '~/plugins/vuetify-mask.js',
     ]
   },
 

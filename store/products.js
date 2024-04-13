@@ -48,10 +48,19 @@ export const actions = {
           return res;
        })
   },
-   async matchProduct({commit},obj){
+  async matchProduct({commit},obj){
     return await this.$entegraApi.$post('/matchN11Product',obj).then(res=>{
       return res;
    })
+  },
+  async  addNewProduct({commit},obj){
+
+    let product = {
+      product : obj
     }
 
+    return await this.$entegraApi.$post('/products',product).then(res=>{
+      return res;
+   })
+  }
 }
