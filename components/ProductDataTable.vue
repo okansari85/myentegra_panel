@@ -149,10 +149,14 @@
             />
           </template>
         </Column>
-        <Column header="Islemler" :styles="{'min-width':'8rem'}">
+        <Column header="Islemler" :styles="{'min-width':'5rem'}">
           <template #body="slotProps">
-            <Button icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2" @click="editProduct(slotProps.data)" />
-            <Button icon="pi pi-trash" class="p-button-rounded p-button-warning" @click="confirmDeleteProduct(slotProps.data)" />
+            <v-icon
+              small
+              @click="clickEditProduct(slotProps.data)"
+            >
+              mdi-pencil
+            </v-icon>
           </template>
         </Column>
       </DataTable>
@@ -253,7 +257,7 @@ computed: {
     ...mapState({
       n11_product: (state) => state.products.n11_product,
     }),
-  },
+},
 data() {
         return {
             selectedCustomers: null,
@@ -398,7 +402,12 @@ mounted() {
             this.selectAll = false;
         },
         clickNewProduct(){
-          this.$refs.productFormComp.showModal();
+          this.$refs.productFormComp.showModal('new');
+
+        },
+        clickEditProduct(product){
+          console.log(product);
+          this.$refs.productFormComp.showModal('edit', product);
         },
         onProductSave(){
           console.log("onsave");

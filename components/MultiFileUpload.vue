@@ -61,7 +61,7 @@
                   top: -9px; "
                   @click="onRemove(index)"
                 > <v-icon color="black" class="handle mt-0">mdi-close-circle</v-icon></span>
-                <img :src="getFileImage(prog.file)" width="90%" stye="object-fit:contain;overflow:hidden;">
+                <img :src="prog.exiting ? prog.file.url : getFileImage(prog.file)"  height="90%" style="width:90%!important;height:90%!important;object-fit:contain!important;overflow:hidden;">
                 <template v-if="prog.hasError">
                   <v-tooltip bottom>
                     <template #activator="{ on, attrs }">
@@ -159,6 +159,7 @@ export default {
               hasError:false,
               loading:true,
               ErrorMessage:'',
+              exiting: false,
             })
 
              this.onUpload(f,index);
@@ -280,5 +281,18 @@ export default {
 }
 .redBrdr{
     border:1px dashed #cf1b24 !important;
+}
+
+.product_image {
+    max-width: 50px;
+    min-width: 50px;
+    min-height: 50px;
+    width: 50px;
+    height: 50px;
+    overflow: hidden;
+    margin-right: 12px;
+    border-radius: 4px;
+    background-color: #fff;
+    border: solid 1px #e5e5e5;
 }
 </style>

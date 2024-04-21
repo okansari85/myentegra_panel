@@ -50,7 +50,7 @@
                           class="pl-0 mb-4 pb-0"
                         >
                           <VueTreeselect
-                            v-model="category"
+                            v-model="product.category"
                             :options="categories"
                             :disable-branch-nodes="true"
                             :show-count="true"
@@ -69,7 +69,7 @@
                           class="pl-0 mb-3 pb-0"
                         >
                           <v-text-field
-                            v-model="productName"
+                            v-model="product.productName"
                             :rules="textRules"
                             :counter="65"
                             label="Ürün Adı*"
@@ -88,7 +88,7 @@
                           class="pl-0 mb-0 pb-0"
                         >
                           <v-autocomplete
-                            v-model="marka"
+                            v-model="product.marka"
                             :items="markalar"
                             item-text="marka"
                             item-value="value"
@@ -103,11 +103,11 @@
                     </v-container>
                   </v-form>
                   <client-only>
-                    <VueEditor v-model="description" class="mb-5" />
+                    <VueEditor v-model="product.description" class="mb-5" />
                   </client-only>
                   <v-btn
                     color="primary"
-                    :disabled="!productValid || category==null"
+                    :disabled="!productValid || product.category==null"
                     @click="e1 = 2"
                   >
                     Devam Et
@@ -115,10 +115,10 @@
                 </v-stepper-content>
 
                 <v-stepper-content step="2">
-                  <MultiFileUpload class="mb-10 mt-5" @dosyaSecildi="handleDosyaSecildi" />
+                  <MultiFileUpload ref="fileUpload" class="mb-10 mt-5" @dosyaSecildi="handleDosyaSecildi" />
                   <v-btn
                     color="primary"
-                    :disabled="selectedfiles.length>0 ? false:true"
+                    :disabled="product.selectedfiles.length>0 ? false:true"
                     @click="e1 = 3"
                   >
                     Devam Et
@@ -155,7 +155,7 @@
                                 class="pl-0 mb-0 pb-0"
                               >
                                 <v-text-field
-                                  v-model="productCode"
+                                  v-model="product.productCode"
                                   v-mask="'########'"
                                   :counter="255"
                                   :rules="textRules"
@@ -164,6 +164,7 @@
                                   dense
                                   required
                                   clearable
+                                  return-masked-value
                                 />
                               </v-col>
                               <v-col
@@ -174,7 +175,7 @@
                                 class="pl-0 mb-0 pb-0"
                               >
                                 <v-text-field
-                                  v-model="stock"
+                                  v-model="product.stock"
                                   :counter="255"
                                   :rules="textRules"
                                   label="Stok"
@@ -192,7 +193,7 @@
                                 class="pl-0 mb-0 pb-0"
                               >
                                 <v-currency-field
-                                  v-model="price"
+                                  v-model="product.price"
                                   label="Fiyat"
                                   :rules="textRules"
                                   outlined
@@ -211,7 +212,7 @@
                                 class="pl-0 mb-0 pb-0"
                               >
                                 <v-text-field
-                                  v-model="desi"
+                                  v-model="product.desi"
                                   :counter="99"
                                   :rules="textRules"
                                   label="Desi"
@@ -229,7 +230,7 @@
                                 class="pl-0 mb-0 pb-0"
                               >
                                 <v-text-field
-                                  v-model="profit_rate"
+                                  v-model="product.profit_rate"
                                   :counter="99"
                                   :rules="textRules"
                                   label="Kar Marjı %"
@@ -268,7 +269,7 @@
                                     class="text-h5"
                                     cols="12"
                                   >
-                                    {{ formatCurrency((parseFloat(price)*1.1*1.2)+30) }}
+                                    {{ formatCurrency((parseFloat(product.price)*1.1*1.2)+30) }}
                                   </v-col>
                                 </v-row>
                               </v-card-text>
@@ -288,7 +289,7 @@
                                   <v-list-item-title>
                                     Karlı Fiyat
                                   </v-list-item-title>
-                                  <v-list-item-subtitle>Kar Marjı {{ profit_rate }} %</v-list-item-subtitle>
+                                  <v-list-item-subtitle>Kar Marjı {{ product.profit_rate }} %</v-list-item-subtitle>
                                 </v-list-item-content>
                               </v-list-item>
                               <v-card-text
@@ -299,7 +300,7 @@
                                     class="text-h5"
                                     cols="6"
                                   >
-                                    {{ formatCurrency( ((parseFloat(price)*1.1*1.2)+30) * ( 1 + profit_rate / 100 ) ) }}
+                                    {{ formatCurrency( ((parseFloat(product.price)*1.1*1.2)+30) * ( 1 + product.profit_rate / 100 ) ) }}
                                   </v-col>
                                   <v-col
                                     class="text-h5"
@@ -311,7 +312,7 @@
                                     font-size: 18px;
                                     height: 35px;color:white;"
                                     >
-                                      {{ formatCurrency(((parseFloat(price)*1.1*1.2)+30) * ( 1 + profit_rate / 100 ) - ((parseFloat(price)*1.1*1.2)+30) ) }}
+                                      {{ formatCurrency(((parseFloat(product.price)*1.1*1.2)+30) * ( 1 + product.profit_rate / 100 ) - ((parseFloat(product.price)*1.1*1.2)+30) ) }}
                                     </v-chip>
                                   </v-col>
                                 </v-row>
@@ -426,16 +427,20 @@ export default {
   },
   data(){
     return{
-      category:null,
-      price: 0,
+      product:{
+        category:null,
+        price:0,
+        stock:'',
+        profit_rate:'',
+        marka:0,
+        desi:'',
+        description:'',
+        productName:'',
+        productCode:'',
+        selectedfiles: [],
+      },
       e1:1,
-      stock:'',
       switch1:'',
-      profit_rate:'',
-      marka:0,
-      desi:'',
-      description:'',
-      selectedfiles: [],
       MdlText :"Yeni Ürün Ekle",
       productValid:false,
       productValid2:false,
@@ -468,9 +473,6 @@ export default {
         children: node.children && node.children.length ? node.children : 0,
       }
       },
-      productName:'',
-      productCode:'',
-      selectedCity: null,
     }
   },
   methods:{
@@ -479,28 +481,94 @@ export default {
         getMainCategories:'categories/getMainCategories',
         addNewProduct:'products/addNewProduct',
     }),
-    showModal(){
+    showModal(stat,obj=null){
+       this.status=stat;
+
+       if (stat=='new'){
+          this.MdlText = "Yeni Ürün Ekle"
+          this.initDefaultState();
+          this.$refs.fileUpload.progressInfos = [];
+       }
+       if (stat=='edit'){
+          this.MdlText = "Ürün Düzenle"
+          this.fillForm(obj);
+       }
+
        this.$refs.modals.dialog = true;
-       this.status='new';
-       this.MdlText="Yeni Ürün Ekle"
+    },
+    fillForm(obj){
+         this.product.productName = obj.productTitle;
+         this.product.category=obj.category.id;
+         this.product.marka=1;
+         this.product.price=obj.price;
+         this.product.stock = parseInt(obj.stock);
+         this.product.profit_rate = (obj.profit_rate - 1) * 100;
+         this.product.description = obj.description;
+         let index=0;
+
+         this.$refs.fileUpload.progressInfos = [];
+         this.product.selectedfiles = [];
+
+         obj.images.forEach((item, index) => {
+          this.getUploadedFile(item.url, item.name, item.id,index);
+          index++;
+          this.product.selectedfiles.push({
+                      file: {
+                          url:item.url,
+                          id:item.id
+                        },
+          })
+         })
+
+
+    },
+
+    async getUploadedFile(url, fileName, id,index) {
+                      this.$refs.fileUpload.progressInfos.push({
+                        percentage: 0,
+                        file: {
+                          url:url,
+                          id:id
+                        },
+                        uploaded:true,
+                        hasError:false,
+                        loading:false,
+                        ErrorMessage:'',
+                        exiting:true,
+                      });
+    },
+
+    initDefaultState(){
+      this.product={
+            category:null,
+            price:0,
+            stock:0,
+            profit_rate:0,
+            marka:0,
+            desi:'',
+            description:'',
+            productName:'',
+            productCode:'',
+            selectedfiles : [],
+        };
+
     },
     clickedSave(){
 
       let valid =this.validationControl();
       if (this.status == "new" && valid) {
 
-
         let product = {
-          category_id: this.category,
-          productTitle: this.productName,
-          productCode: this.productCode,
-          productImages:this.selectedfiles,
-          desi:this.desi,
-          price:this.price,
-          profitRate:1 + this.profit_rate /100 ,
-          marka:this.marka,
-          description:this.description,
-          stock:this.stock
+          category_id: this.product.category,
+          productTitle: this.product.productName,
+          productCode: this.product.productCode,
+          productImages:this.product.selectedfiles,
+          desi:this.product.desi,
+          price:this.product.price,
+          profitRate:1 + this.product.profit_rate /100 ,
+          marka:this.product.marka,
+          description:this.product.description,
+          stock:this.product.stock
         };
 
         this.addNewProduct(product).then(() => {
@@ -514,13 +582,13 @@ export default {
     validationControl(){
       this.$refs.productForm.validate();
       this.$refs.productForm2.validate();
-      return (this.productValid && this.productValid2 && this.category!=null && this.selectedfiles.length>0) ? true:false;
+      return (this.productValid && this.productValid2 && this.product.category!=null && this.product.selectedfiles.length>0) ? true:false;
     },
     handleSelect(selectedNode){
 
     },
     handleDosyaSecildi(files) {
-      this.selectedfiles = files;
+      this.product.selectedfiles = files;
 
     },
     formatCurrency(value) {
