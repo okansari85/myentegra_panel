@@ -50,6 +50,7 @@
       <v-divider />
       <DataTable
         ref="dt"
+        responsive-layout="stack"
         :value="items"
         :lazy="true"
         :paginator="true"
@@ -62,7 +63,6 @@
         :filters.sync="filters"
         :selection.sync="selectedCustomers"
         :select-all="selectAll"
-        show-gridlines
         @page="onPage($event)"
         @select-all-change="onSelectAllChange"
         @row-select="onRowSelect"
@@ -419,10 +419,36 @@ mounted() {
 </script>
 <style>
 .p-datatable table {
-    border-collapse: collapse;
+    border-collapse: seperate !important;
+    border-spacing : 0px 10px;
     min-width: 100%;
     table-layout: fixed;
     font-size: 14px;
+}
+
+::v-deep .p-datatable-wrapper {
+    border-radius: 0.5rem 0.5rem 0.5rem 0.5rem;
+}
+::v-deep .p-datatable-table > thead > tr:first-of-type > th:first-of-type  {
+  border-radius: 0.5rem 0 0 0!important;
+}
+
+/* Top Right Would be: */
+::v-deep .p-datatable-table > thead > tr:first-of-type > th:last-of-type {
+    border-radius: 0 0.5rem 0 0 !important;
+}
+
+/* Bottom Left Would Be: */
+::v-deep .p-datatable-table > tbody > tr:last-of-type > td:first-of-type {
+    border-radius:  0  0  0 0.5rem!important;
+}
+
+/* Bottom Right Would Be: */
+::v-deep .p-datatable-table > tbody > tr:last-of-type > td:last-of-type {
+    border-radius:  0  0 0.5rem 0 !important;
+}
+.ui-datatable * {
+     border : 0px !important;
 }
 :deep(.p-paginator) {
     .p-paginator-current {

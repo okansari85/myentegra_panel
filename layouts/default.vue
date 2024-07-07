@@ -15,29 +15,30 @@
       <!-- -->
       <v-spacer />
       <v-menu offset-y>
-      <template v-slot:activator="{ on }">
-          <v-btn text v-on="on" color="grey" class="text--darken-2">
-              <v-icon left>mdi-chevron-down</v-icon>
-              <span>Menu</span>
+        <template #activator="{ on }">
+          <v-btn text color="grey" class="text--darken-2" v-on="on">
+            <v-icon left>
+              mdi-chevron-down
+            </v-icon>
+            <span>Menu</span>
           </v-btn>
-      </template>
-          <v-list>
-              <v-list-item
-                  v-for="(link,idx) in links"
-                  :key="idx"
-                  to="/"
-                  @click="logout"
-              >
+        </template>
+        <v-list>
+          <v-list-item
+            v-for="(link,idx) in links"
+            :key="idx"
+            to="/"
+            @click="logout"
+          >
             <v-list-item-title>Güvenli Çıkış</v-list-item-title>
           </v-list-item>
         </v-list>
       </v-menu>
-
     </v-app-bar>
 
     <!-- Sizes your content based upon application components -->
     <v-main>
-       <v-navigation-drawer
+      <v-navigation-drawer
         v-model="drawer"
         left
         app
@@ -51,7 +52,7 @@
             Logo konulacak
           </div>
         </v-parallax>
-        <template v-slot:prepend>
+        <template #prepend>
           <v-list-item two-line>
             <v-list-item-avatar>
               <img src="https://randomuser.me/api/portraits/women/81.jpg">
@@ -70,7 +71,7 @@
           <v-list-group
             prepend-icon="mdi-exclamation"
           >
-            <template v-slot:activator>
+            <template #activator>
               <v-list-item-title>Ürün Yönetimi</v-list-item-title>
             </template>
             <v-list-item
@@ -89,7 +90,7 @@
           <v-list-group
             prepend-icon="mdi-exclamation"
           >
-            <template v-slot:activator>
+            <template #activator>
               <v-list-item-title>N11</v-list-item-title>
             </template>
             <v-list-item
@@ -108,7 +109,7 @@
           <v-list-group
             prepend-icon="mdi-cog"
           >
-            <template v-slot:activator>
+            <template #activator>
               <v-list-item-title>Parametreler</v-list-item-title>
             </template>
             <v-list-item
@@ -118,12 +119,21 @@
               <v-list-item-title>Maliyet Hesaplama</v-list-item-title>
             </v-list-item>
           </v-list-group>
+          <v-list-item
+            link
+            to="/siparisler"
+          >
+            <v-list-item-icon>
+              <v-icon> mdi-package</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>Siparişler</v-list-item-title>
+          </v-list-item>
         </v-list>
       </v-navigation-drawer>
       <!-- Provides the application the proper gutter -->
       <v-container fluid>
         <!-- If using vue-router -->
-        <Nuxt/>
+        <Nuxt />
       </v-container>
     </v-main>
 

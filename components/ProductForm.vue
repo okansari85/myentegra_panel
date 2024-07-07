@@ -177,7 +177,7 @@
                                 <v-text-field
                                   v-model="product.stock"
                                   :counter="255"
-                                  :rules="textRules"
+                                  :rules="selectRules"
                                   label="Stok"
                                   outlined
                                   dense
@@ -213,8 +213,8 @@
                               >
                                 <v-text-field
                                   v-model="product.desi"
+                                  :rules="selectRules"
                                   :counter="99"
-                                  :rules="textRules"
                                   label="Desi"
                                   outlined
                                   dense
@@ -231,8 +231,8 @@
                               >
                                 <v-text-field
                                   v-model="product.profit_rate"
+                                  :rules="selectRules"
                                   :counter="99"
-                                  :rules="textRules"
                                   label="Kar Marjı %"
                                   outlined
                                   dense
@@ -460,7 +460,7 @@ export default {
       ],
       textRules: [
               v => !!v || 'Bu alan Gereklidir',
-              v => (v && v.length >= 1) || 'İlgili alan 3 karakterden fazla olmalıdır.',
+              v => (v && v.length >= 1) || 'İlgili alan 1 karakterden fazla olmalıdır.',
               v => (v && v.length <= 65) || 'İlgili alan en fazla 65 karakter olmalıdır.',
       ],
       selectRules: [
@@ -497,11 +497,13 @@ export default {
        this.$refs.modals.dialog = true;
     },
     fillForm(obj){
+         this.product.productCode = obj.productCode;
          this.product.productName = obj.productTitle;
          this.product.category=obj.category.id;
+         this.product.desi=obj.desi;
          this.product.marka=1;
          this.product.price=obj.price;
-         this.product.stock = parseInt(obj.stock);
+         this.product.stock = parseFloat(obj.stock);
          this.product.profit_rate = (obj.profit_rate - 1) * 100;
          this.product.description = obj.description;
          let index=0;
@@ -519,8 +521,6 @@ export default {
                         },
           })
          })
-
-
     },
 
     async getUploadedFile(url, fileName, id,index) {
@@ -542,8 +542,8 @@ export default {
       this.product={
             category:null,
             price:0,
-            stock:0,
-            profit_rate:0,
+            stock:'',
+            profit_rate:'',
             marka:0,
             desi:'',
             description:'',
