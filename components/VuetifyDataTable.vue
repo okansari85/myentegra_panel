@@ -153,17 +153,15 @@ import _ from 'lodash';
           options: {
             page:1,
             itemsPerPage:15,
+            status:0,
           },
         }
       },
       watch:{
          options: {
-          handler () {
-              this.$emit("handle-options",this.options,this.search)
+            handler () { this.$emit("handle-options",this.options,this.search) },
+            deep: true,
           },
-          deep: true,
-          },
-
           search: _.debounce(function(){
              this.options.page=1;
              this.$emit("handle-options",this.options,this.search)

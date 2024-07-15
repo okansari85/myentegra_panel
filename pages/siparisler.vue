@@ -29,11 +29,32 @@
             @clicked-delete="clickedDelete"
             @handle-options="handleOptions"
           >
+            <template #buyer="{ degisken }">
+              <v-list-item two-line class="pa-0">
+                <v-list-item-content>
+                  <v-list-item-title>{{ degisken.buyer.fullName }}</v-list-item-title>
+                  <v-list-item-subtitle>{{ degisken.buyer.adresses[1].district }} / {{ degisken.buyer.adresses[1].city }}</v-list-item-subtitle>
+                </v-list-item-content>
+              </v-list-item>
+            </template>
+            <template #orderDate="{ degisken }">
+              <v-list-item two-line class="pa-0">
+                <v-list-item-content>
+                  <v-list-item-title>{{ formattedDate(degisken.orderDate) }}</v-list-item-title>
+                  <v-list-item-subtitle>{{ degisken.market_order_number }}</v-list-item-subtitle>
+                </v-list-item-content>
+              </v-list-item>
+            </template>
             <template #shippingCompanyName="{ degisken }">
-              <span>{{ degisken.shippingCompanyName }} / {{ degisken.campaignNumber }} </span>
+              <v-list-item two-line class="pa-0">
+                <v-list-item-content>
+                  <v-list-item-title>{{ degisken.shippingCompanyName }}</v-list-item-title>
+                  <v-list-item-subtitle>{{ degisken.campaignNumber }}</v-list-item-subtitle>
+                </v-list-item-content>
+              </v-list-item>
             </template>
             <template #platformId="{ degisken }">
-              <span>{{ degisken.platformId == '1' ? 'N11' : '' }} </span>
+              <span>{{ degisken.platformId == '1' ? 'N11' : degisken.platformId == '2' ? 'HB' : '' }} </span>
             </template>
           </VuetifyDataTable>
         </v-card>
@@ -53,11 +74,32 @@
             @clicked-delete="clickedDelete"
             @handle-options="handleOptions"
           >
+          <template #buyer="{ degisken }">
+              <v-list-item two-line class="pa-0">
+                <v-list-item-content>
+                  <v-list-item-title>{{ degisken.buyer.fullName }}</v-list-item-title>
+                  <v-list-item-subtitle>{{ degisken.buyer.adresses[1].district }} / {{ degisken.buyer.adresses[1].city }}</v-list-item-subtitle>
+                </v-list-item-content>
+              </v-list-item>
+            </template>
+            <template #orderDate="{ degisken }">
+              <v-list-item two-line class="pa-0">
+                <v-list-item-content>
+                  <v-list-item-title>{{ formattedDate(degisken.orderDate) }}</v-list-item-title>
+                  <v-list-item-subtitle>{{ degisken.market_order_number }}</v-list-item-subtitle>
+                </v-list-item-content>
+              </v-list-item>
+            </template>
             <template #shippingCompanyName="{ degisken }">
-              <span>{{ degisken.shippingCompanyName }} / {{ degisken.campaignNumber }} </span>
+              <v-list-item two-line class="pa-0">
+                <v-list-item-content>
+                  <v-list-item-title>{{ degisken.shippingCompanyName }}</v-list-item-title>
+                  <v-list-item-subtitle>{{ degisken.campaignNumber }}</v-list-item-subtitle>
+                </v-list-item-content>
+              </v-list-item>
             </template>
             <template #platformId="{ degisken }">
-              <span>{{ degisken.platformId == '1' ? 'N11' : '' }} </span>
+              <span>{{ degisken.platformId == '1' ? 'N11' : degisken.platformId == '2' ? 'HB' : '' }} </span>
             </template>
           </VuetifyDataTable>
         </v-card>
@@ -77,11 +119,32 @@
             @clicked-delete="clickedDelete"
             @handle-options="handleOptions"
           >
+          <template #buyer="{ degisken }">
+              <v-list-item two-line class="pa-0">
+                <v-list-item-content>
+                  <v-list-item-title>{{ degisken.buyer.fullName }}</v-list-item-title>
+                  <v-list-item-subtitle>{{ degisken.buyer.adresses[1].district }} / {{ degisken.buyer.adresses[1].city }}</v-list-item-subtitle>
+                </v-list-item-content>
+              </v-list-item>
+            </template>
+            <template #orderDate="{ degisken }">
+              <v-list-item two-line class="pa-0">
+                <v-list-item-content>
+                  <v-list-item-title>{{ formattedDate(degisken.orderDate) }}</v-list-item-title>
+                  <v-list-item-subtitle>{{ degisken.market_order_number }}</v-list-item-subtitle>
+                </v-list-item-content>
+              </v-list-item>
+            </template>
             <template #shippingCompanyName="{ degisken }">
-              <span>{{ degisken.shippingCompanyName }} / {{ degisken.campaignNumber }} </span>
+              <v-list-item two-line class="pa-0">
+                <v-list-item-content>
+                  <v-list-item-title>{{ degisken.shippingCompanyName }}</v-list-item-title>
+                  <v-list-item-subtitle>{{ degisken.campaignNumber }}</v-list-item-subtitle>
+                </v-list-item-content>
+              </v-list-item>
             </template>
             <template #platformId="{ degisken }">
-              <span>{{ degisken.platformId == '1' ? 'N11' : '' }} </span>
+              <span>{{ degisken.platformId == '1' ? 'N11' : degisken.platformId == '2' ? 'HB' : '' }} </span>
             </template>
           </VuetifyDataTable>
         </v-card>
@@ -89,6 +152,7 @@
       <v-tab-item class="pt-2">
         <v-card>
           <VuetifyDataTable
+
             ref="dtc"
             :headers="headers[0]"
             :loading="loading"
@@ -101,11 +165,32 @@
             @clicked-delete="clickedDelete"
             @handle-options="handleOptions"
           >
+          <template #buyer="{ degisken }">
+              <v-list-item two-line class="pa-0">
+                <v-list-item-content>
+                  <v-list-item-title>{{ degisken.buyer.fullName }}</v-list-item-title>
+                  <v-list-item-subtitle>{{ degisken.buyer.adresses[1].district }} / {{ degisken.buyer.adresses[1].city }}</v-list-item-subtitle>
+                </v-list-item-content>
+              </v-list-item>
+            </template>
+            <template #orderDate="{ degisken }">
+              <v-list-item two-line class="pa-0">
+                <v-list-item-content>
+                  <v-list-item-title>{{ formattedDate(degisken.orderDate) }}</v-list-item-title>
+                  <v-list-item-subtitle>{{ degisken.market_order_number }}</v-list-item-subtitle>
+                </v-list-item-content>
+              </v-list-item>
+            </template>
             <template #shippingCompanyName="{ degisken }">
-              <span>{{ degisken.shippingCompanyName }} / {{ degisken.campaignNumber }} </span>
+              <v-list-item two-line class="pa-0">
+                <v-list-item-content>
+                  <v-list-item-title>{{ degisken.shippingCompanyName }}</v-list-item-title>
+                  <v-list-item-subtitle>{{ degisken.campaignNumber }}</v-list-item-subtitle>
+                </v-list-item-content>
+              </v-list-item>
             </template>
             <template #platformId="{ degisken }">
-              <span>{{ degisken.platformId == '1' ? 'N11' : '' }} </span>
+              <span>{{ degisken.platformId == '1' ? 'N11' : degisken.platformId == '2' ? 'HB' : '' }} </span>
             </template>
           </VuetifyDataTable>
         </v-card>
@@ -116,15 +201,11 @@
 <script>
 /*eslint-disable*/
 import { mapState,mapGetters,mapActions,mapMutations } from "vuex";
-import Vue from 'vue';
 export default {
   meta: {
     auth: { authority: 1 },
   },
   computed: {
-    ...mapState({
-      orders: (state) => state.siparisler.orders,
-    }),
     ...mapGetters({
       getorderscount: "siparisler/getorderscount",
       getordersperpage: "siparisler/getordersperpage",
@@ -137,6 +218,11 @@ export default {
       getOrders: "siparisler/getOrders",
       resetState :"siparisler/resetState",
     }),
+    formattedDate(date) {
+      const options = { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric' };
+      const dateObj = new Date(date);
+      return dateObj.toLocaleDateString('tr-TR', options);
+    },
     clickedEdit(val) {},
     clickedDelete(val) {},
     handleOptions(options, search) {
@@ -180,9 +266,9 @@ export default {
       headers: [
           [
             {text: 'Platform', value: 'platformId'},
-            {text: 'Sipariş Tarihi', value: 'orderDate'},
-            {text: 'Sipariş Numarası', value: 'market_order_number'},
-            {text: 'Kargo / Kampanya Kodu', value: 'shippingCompanyName'},
+            {text: 'Sipariş Bilgileri', value: 'orderDate'},
+            {text: 'Müşteri Bilgileri', value: 'buyer'},
+            {text: 'Kargo Bilgileri', value: 'shippingCompanyName'},
           ],
       ],
       slots: [
@@ -193,6 +279,14 @@ export default {
         {
           Id: 2,
           slotName: "platformId",
+        },
+        {
+          Id: 3,
+          slotName: "orderDate",
+        },
+        {
+          Id: 4,
+          slotName: "buyer",
         },
       ],
       title: ['Yeni Siparişler (Teyit Edilecek)','Kargolanacak', 'Kargolandı', 'Tamamlandı'],
