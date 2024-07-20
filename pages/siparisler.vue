@@ -33,7 +33,9 @@
               <v-list-item two-line class="pa-0">
                 <v-list-item-content>
                   <v-list-item-title>{{ degisken.buyer.fullName }}</v-list-item-title>
-                  <v-list-item-subtitle>{{ degisken.buyer.adresses[1].district }} / {{ degisken.buyer.adresses[1].city }}</v-list-item-subtitle>
+                  <v-list-item-subtitle class="text-wrap">
+                    {{ degisken.buyer.adresses[1].district }} / {{ degisken.buyer.adresses[1].city }}
+                  </v-list-item-subtitle>
                 </v-list-item-content>
               </v-list-item>
             </template>
@@ -49,9 +51,24 @@
               <v-list-item two-line class="pa-0">
                 <v-list-item-content>
                   <v-list-item-title>{{ degisken.shippingCompanyName }}</v-list-item-title>
-                  <v-list-item-subtitle>{{ degisken.campaignNumber }}</v-list-item-subtitle>
+                  <v-list-item-subtitle class="text-wrap">
+                    {{ degisken.campaignNumber }}
+                  </v-list-item-subtitle>
                 </v-list-item-content>
               </v-list-item>
+            </template>
+            <template #items="{ degisken }">
+              <v-list-item v-for="item in degisken.items" :key="item.id" two-line class="pa-0">
+                <v-list-item-content>
+                  <v-list-item-title>{{ item.orderable.productSellerCode }}{{ item.orderable.merchantSku }} x {{ item.orderable.quantity }}</v-list-item-title>
+                  <v-list-item-subtitle class="text-wrap">
+                    {{ item.orderable.productName }}
+                  </v-list-item-subtitle>
+                </v-list-item-content>
+              </v-list-item>
+            </template>
+            <template #dueAmount="{ degisken }">
+              <span style="font-weight: bold;font-size:16px;"><b>{{ parseFloat(degisken.dueAmount).toFixed(2) }}</b></span>
             </template>
             <template #platformId="{ degisken }">
               <span>{{ degisken.platformId == '1' ? 'N11' : degisken.platformId == '2' ? 'HB' : '' }} </span>
@@ -74,7 +91,7 @@
             @clicked-delete="clickedDelete"
             @handle-options="handleOptions"
           >
-          <template #buyer="{ degisken }">
+            <template #buyer="{ degisken }">
               <v-list-item two-line class="pa-0">
                 <v-list-item-content>
                   <v-list-item-title>{{ degisken.buyer.fullName }}</v-list-item-title>
@@ -98,8 +115,21 @@
                 </v-list-item-content>
               </v-list-item>
             </template>
+            <template #items="{ degisken }">
+              <v-list-item v-for="item in degisken.items" :key="item.id" two-line class="pa-0">
+                <v-list-item-content>
+                  <v-list-item-title>{{ item.orderable.productSellerCode }}{{ item.orderable.merchantSku }} x {{ item.orderable.quantity }}</v-list-item-title>
+                  <v-list-item-subtitle class="text-wrap">
+                    {{ item.orderable.productName }}
+                  </v-list-item-subtitle>
+                </v-list-item-content>
+              </v-list-item>
+            </template>
             <template #platformId="{ degisken }">
               <span>{{ degisken.platformId == '1' ? 'N11' : degisken.platformId == '2' ? 'HB' : '' }} </span>
+            </template>
+            <template #dueAmount="{ degisken }">
+              <span style="font-weight: bold;"><b>{{ degisken.dueAmount }}</b></span>
             </template>
           </VuetifyDataTable>
         </v-card>
@@ -119,7 +149,7 @@
             @clicked-delete="clickedDelete"
             @handle-options="handleOptions"
           >
-          <template #buyer="{ degisken }">
+            <template #buyer="{ degisken }">
               <v-list-item two-line class="pa-0">
                 <v-list-item-content>
                   <v-list-item-title>{{ degisken.buyer.fullName }}</v-list-item-title>
@@ -136,15 +166,29 @@
               </v-list-item>
             </template>
             <template #shippingCompanyName="{ degisken }">
-              <v-list-item two-line class="pa-0">
+              <v-list-item three-line class="pa-0">
                 <v-list-item-content>
                   <v-list-item-title>{{ degisken.shippingCompanyName }}</v-list-item-title>
                   <v-list-item-subtitle>{{ degisken.campaignNumber }}</v-list-item-subtitle>
+                  <v-list-item-subtitle>{{ degisken.shippedDate }} </v-list-item-subtitle>
                 </v-list-item-content>
               </v-list-item>
             </template>
             <template #platformId="{ degisken }">
               <span>{{ degisken.platformId == '1' ? 'N11' : degisken.platformId == '2' ? 'HB' : '' }} </span>
+            </template>
+            <template #items="{ degisken }">
+              <v-list-item v-for="item in degisken.items" :key="item.id" two-line class="pa-0">
+                <v-list-item-content>
+                  <v-list-item-title>{{ item.orderable.productSellerCode }}{{ item.orderable.merchantSku }} x {{ item.orderable.quantity }}</v-list-item-title>
+                  <v-list-item-subtitle class="text-wrap">
+                    {{ item.orderable.productName }}
+                  </v-list-item-subtitle>
+                </v-list-item-content>
+              </v-list-item>
+            </template>
+            <template #dueAmount="{ degisken }">
+              <span style="font-weight: bold;"><b>{{ degisken.dueAmount }}</b></span>
             </template>
           </VuetifyDataTable>
         </v-card>
@@ -165,7 +209,7 @@
             @clicked-delete="clickedDelete"
             @handle-options="handleOptions"
           >
-          <template #buyer="{ degisken }">
+            <template #buyer="{ degisken }">
               <v-list-item two-line class="pa-0">
                 <v-list-item-content>
                   <v-list-item-title>{{ degisken.buyer.fullName }}</v-list-item-title>
@@ -182,15 +226,29 @@
               </v-list-item>
             </template>
             <template #shippingCompanyName="{ degisken }">
-              <v-list-item two-line class="pa-0">
+              <v-list-item three-line class="pa-0">
                 <v-list-item-content>
                   <v-list-item-title>{{ degisken.shippingCompanyName }}</v-list-item-title>
-                  <v-list-item-subtitle>{{ degisken.campaignNumber }}</v-list-item-subtitle>
+                  <v-list-item-subtitle>{{ degisken.campaignNumber }} </v-list-item-subtitle>
+                  <v-list-item-subtitle>{{ degisken.shippedDate }} </v-list-item-subtitle>
                 </v-list-item-content>
               </v-list-item>
             </template>
             <template #platformId="{ degisken }">
               <span>{{ degisken.platformId == '1' ? 'N11' : degisken.platformId == '2' ? 'HB' : '' }} </span>
+            </template>
+            <template #items="{ degisken }">
+              <v-list-item v-for="item in degisken.items" :key="item.id" two-line class="pa-0">
+                <v-list-item-content>
+                  <v-list-item-title>{{ item.orderable.productSellerCode }}{{ item.orderable.merchantSku }} x {{ item.orderable.quantity }}</v-list-item-title>
+                  <v-list-item-subtitle class="text-wrap">
+                    {{ item.orderable.productName }}
+                  </v-list-item-subtitle>
+                </v-list-item-content>
+              </v-list-item>
+            </template>
+            <template #dueAmount="{ degisken }">
+              <span style="font-weight: bold;"><b>{{ parseFloat(degisken.dueAmount).toFixed(2) }}</b></span>
             </template>
           </VuetifyDataTable>
         </v-card>
@@ -268,7 +326,9 @@ export default {
             {text: 'Platform', value: 'platformId'},
             {text: 'Sipariş Bilgileri', value: 'orderDate'},
             {text: 'Müşteri Bilgileri', value: 'buyer'},
+            {text: 'Ürün Bilgileri', value: 'items'},
             {text: 'Kargo Bilgileri', value: 'shippingCompanyName'},
+            {text: 'Sipariş Tutaru', value: 'dueAmount'},
           ],
       ],
       slots: [
@@ -287,6 +347,14 @@ export default {
         {
           Id: 4,
           slotName: "buyer",
+        },
+        {
+          Id: 5,
+          slotName: "dueAmount",
+        },
+        {
+          Id: 6,
+          slotName: "items",
         },
       ],
       title: ['Yeni Siparişler (Teyit Edilecek)','Kargolanacak', 'Kargolandı', 'Tamamlandı'],
