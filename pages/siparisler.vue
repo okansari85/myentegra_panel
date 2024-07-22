@@ -80,7 +80,7 @@
         <v-card>
           <VuetifyDataTable
             ref="dta"
-            :headers="headers[0]"
+            :headers="headers[1]"
             :loading="loading"
             :items="getallorders"
             :title="title[1]"
@@ -138,7 +138,7 @@
         <v-card>
           <VuetifyDataTable
             ref="dtb"
-            :headers="headers[0]"
+            :headers="headers[2]"
             :loading="loading"
             :items="getallorders"
             :title="title[2]"
@@ -198,7 +198,7 @@
           <VuetifyDataTable
 
             ref="dtc"
-            :headers="headers[0]"
+            :headers="headers[3]"
             :loading="loading"
             :items="getallorders"
             :title="title[3]"
@@ -329,6 +329,31 @@ export default {
             {text: 'Ürün Bilgileri', value: 'items'},
             {text: 'Kargo Bilgileri', value: 'shippingCompanyName'},
             {text: 'Sipariş Tutaru', value: 'dueAmount'},
+            {text: 'Teyitli mi', value: 'is_confirmed'},
+          ],
+          [
+            {text: 'Platform', value: 'platformId'},
+            {text: 'Sipariş Bilgileri', value: 'orderDate'},
+            {text: 'Müşteri Bilgileri', value: 'buyer'},
+            {text: 'Ürün Bilgileri', value: 'items'},
+            {text: 'Kargo Bilgileri', value: 'shippingCompanyName'},
+            {text: 'Sipariş Tutaru', value: 'dueAmount'},
+          ],
+          [
+            {text: 'Platform', value: 'platformId'},
+            {text: 'Sipariş Bilgileri', value: 'orderDate'},
+            {text: 'Müşteri Bilgileri', value: 'buyer'},
+            {text: 'Ürün Bilgileri', value: 'items'},
+            {text: 'Kargo Bilgileri', value: 'shippingCompanyName'},
+            {text: 'Sipariş Tutaru', value: 'dueAmount'},
+          ],
+          [
+            {text: 'Platform', value: 'platformId'},
+            {text: 'Sipariş Bilgileri', value: 'orderDate'},
+            {text: 'Müşteri Bilgileri', value: 'buyer'},
+            {text: 'Ürün Bilgileri', value: 'items'},
+            {text: 'Kargo Bilgileri', value: 'shippingCompanyName'},
+            {text: 'Sipariş Tutaru', value: 'dueAmount'},
           ],
       ],
       slots: [
@@ -355,6 +380,10 @@ export default {
         {
           Id: 6,
           slotName: "items",
+        },
+        {
+          Id: 6,
+          slotName: "is_confirmed",
         },
       ],
       title: ['Yeni Siparişler (Teyit Edilecek)','Kargolanacak', 'Kargolandı', 'Tamamlandı'],

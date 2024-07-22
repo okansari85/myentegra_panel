@@ -321,7 +321,7 @@ mounted() {
           this.clickedProduct = data;
           this.site=site;
          // data.n11_product !=null ?
-          this.handleLogo(data.n11_product !=null ? data.n11_product.n11_product.productSellerCode : this.clickedProduct.productCode,site);
+          this.handleLogo(this.clickedProduct.productCode,site);
           this.eslestir_btn_disabled=true
         },
         async handleLogo(data,site){
