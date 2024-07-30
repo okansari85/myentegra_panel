@@ -47,6 +47,11 @@ export const actions = {
         return res;
      })
   },
+  async confirmItemAndOrder({commit},obj){
+    return await this.$entegraApi.$post('/confirm-item',obj).then(res=>{
+      return res;
+   })
+  },
   resetState({ commit }) {
     commit('RESET_STATE')
   },

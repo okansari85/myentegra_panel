@@ -6,15 +6,15 @@
     hide-overlay
     transition="dialog-bottom-transition"
   >
-    <template v-if="showbtn" v-slot:activator="{ on, attrs }">
+    <template v-if="showbtn" #activator="{ on, attrs }">
       <v-btn
         color="primary"
         dark
         v-bind="attrs"
         v-on="on"
         @click="newItem()"
-        >
-        {{mdlBtnText}}
+      >
+        {{ mdlBtnText }}
       </v-btn>
     </template>
     <v-card>
@@ -30,8 +30,8 @@
           <v-icon>mdi-close</v-icon>
         </v-btn>
         <v-toolbar-title>{{ mdlText }}</v-toolbar-title>
-        <v-spacer></v-spacer>
-        <v-toolbar-items>
+        <v-spacer />
+        <v-toolbar-items v-if="showSaveButton">
           <v-btn
             dark
             text
@@ -46,12 +46,12 @@
         subheader
       >
         <v-list-item>
-          <v-list-item-content>
-            <slot></slot>
+          <v-list-item-content class="pa-2 pt-5">
+            <slot />
           </v-list-item-content>
         </v-list-item>
       </v-list>
-      <v-divider></v-divider>
+      <v-divider />
     </v-card>
   </v-dialog>
 </template>
@@ -73,6 +73,10 @@ export default {
       default:null,
     },
     showbtn:{
+      type:Boolean,
+      default:true,
+    },
+    showSaveButton:{
       type:Boolean,
       default:true,
     },

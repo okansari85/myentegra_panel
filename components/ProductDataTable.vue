@@ -160,7 +160,13 @@
           </template>
         </Column>
       </DataTable>
-      <Dialog :header="ModalHeader" :visible.sync="displayMaximizable" :container-style="{width: '50vw'}" :maximizable="true" :modal="true">
+      <Dialog
+        :header="ModalHeader"
+        :visible.sync="displayMaximizable"
+        :container-style="{width: '50vw'}"
+        :maximizable="true"
+        :modal="true"
+      >
         <v-list v-if="displayMaximizable" three-line>
           <template id="okan">
             <v-list-item>
@@ -188,19 +194,19 @@
           <v-list three-line>
             <template v-if="soapresult">
               <v-list-item>
-                <div class="product_image">
+                <div v-if="site=='n11'" class="product_image">
                   <img :src="n11_product.images.image.url" class="flag" style="width: 100%;height: 100%;object-fit: contain;">
                 </div>
                 <v-list-item-content>
-                  <v-list-item-title> {{ n11_product.title }}</v-list-item-title>
-                  <v-list-item-subtitle> {{ n11_product.productSellerCode }} - {{ n11_product.category.fullName }} </v-list-item-subtitle>
+                  <v-list-item-title> {{ site =='n11' ? n11_product.title : site=='hb' ? hb_product.hepsiburada_sku :'' }} </v-list-item-title>
+                  <v-list-item-subtitle>{{ site=='hb' ? hb_product.merchant_sku : '' }} {{ site =='n11' ? n11_product.productSellerCode : '' }} - {{ site =='n11' ? n11_product.category.fullName : '' }} </v-list-item-subtitle>
                 </v-list-item-content>
               </v-list-item>
             </template>
             <template v-else-if="!try_again">
               <v-list-item>
                 <v-list-item-content>
-                  <v-list-item-title>N11 ' den ürün çekiliyor</v-list-item-title>
+                  <v-list-item-title>{{ sitename }} ' den ürün çekiliyor</v-list-item-title>
                   <v-list-item-subtitle>Lütfen bu işlem sırasında sabırlı olunuz</v-list-item-subtitle>
                 </v-list-item-content>
               </v-list-item>
@@ -217,7 +223,22 @@
         </v-card>
         <template #footer>
           <Button label="Vazgeç" icon="pi pi-times" class="p-button-text" @click="closeMaximizable" />
-          <Button label="Eşleştir" icon="pi pi-check" autofocus :disabled="eslestir_btn_disabled" @click="handleMatch(n11_product,clickedProduct)" />
+          <Button
+            v-if="site=='n11'"
+            label="Eşleştir"
+            icon="pi pi-check"
+            autofocus
+            :disabled="eslestir_btn_disabled"
+            @click="handleMatch(n11_product,clickedProduct)"
+          />
+          <Button
+            v-if="site=='hb'"
+            label="Eşleştir"
+            icon="pi pi-check"
+            autofocus
+            :disabled="eslestir_btn_disabled"
+            @click="handleMatch(hb_product,clickedProduct)"
+          />
         </template>
       </Dialog>
     </v-card>
@@ -256,6 +277,7 @@ props:{
 computed: {
     ...mapState({
       n11_product: (state) => state.products.n11_product,
+      hb_product: (state) => state.products.hb_product,
     }),
 },
 data() {
@@ -277,6 +299,7 @@ data() {
             soapresult:false,
             errorMessagge:'',
             eslestir_btn_disabled:true,
+            sitename:''
         }
 },
 
@@ -294,7 +317,9 @@ mounted() {
     methods: {
       ...mapActions({
           getN11ProductBySellerCode: "products/getN11ProductBySellerCode",
-          matchProduct : "products/matchProduct"
+          matchProduct : "products/matchProduct",
+          matchHbProduct: "products/matchHbProduct",
+          getHbListingByMerchantSku : "products/getHbListingByMerchantSku",
         }),
         openMaximizable() {
             this.displayMaximizable = true;
@@ -305,9 +330,10 @@ mounted() {
         handleUpdateStockPrice(){
           this.$refs.progressBarCompon.fetchProgress();
         },
-        handleMatch(n11_product,db_product){
+        handleMatch(product,db_product){
+          if (this.site == 'n11'){
           let obj = {
-              n11_product: n11_product,
+              n11_product: product,
               db_product: db_product,
             };
 
@@ -315,7 +341,20 @@ mounted() {
               //gelen kayıtlara ba
               this.$refs.progressBarCompon.findBatchID();
             });
+          }
+          if (this.site=='hb'){
+            let obj = {
+              hb_product_id : product.id,
+              db_product_id : db_product.id,
+            }
 
+            this.matchHbProduct(obj).then((res) => {
+              //gelen kayıtlara ba
+              // this.$refs.progressBarCompon.findBatchID();
+              this.closeMaximizable();
+            });
+
+          }
         },
         clickedLogo(data,site){
           this.clickedProduct = data;
@@ -325,16 +364,39 @@ mounted() {
           this.eslestir_btn_disabled=true
         },
         async handleLogo(data,site){
+          this.productCode= data;
+          this.displayMaximizable = true;
+          this.loading_single_product_card=true
+          this.try_again=false
+          this.soapresult=false
+          this.eslestir_btn_disabled=true
+          this.sitename = site == "hb" ? "HB" : site=="n11" ? "N11" : ''
+          this.ModalHeader = this.sitename + " Ürün Eşleştir"
+
+
+          if (site=="hb"){
+            await this.getHbListingByMerchantSku(data).then((res)=>{
+                    this.loading_single_product_card=false
+                    this.soapresult=true;
+                    this.eslestir_btn_disabled=false;
+            })
+           .catch((err)=>{
+                  switch (err.response.status) {
+                    case 404:
+                         this.errorMessagge="Ürün bulumadı"
+                        break;
+                    default:
+                       this.errorMessagge="HB 'den ürün çekerken bir hata oluştu"
+                        break;
+                  }
+                  this.loading_single_product_card=false;
+                  this.try_again=true;
+                  this.soapresult=false;
+           });
+
+          }
 
           if (site=="n11"){
-            this.ModalHeader = "N11 Ürün Eşleştir"
-            this.productCode= data;
-            this.displayMaximizable = true;
-            this.loading_single_product_card=true
-            this.try_again=false
-            this.soapresult=false
-            this.eslestir_btn_disabled=true
-
             await this.getN11ProductBySellerCode(data).then((res)=>{
                    this.loading_single_product_card=false
                    if  (!res.result.status =='success' || res.length==0){

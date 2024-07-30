@@ -1,5 +1,10 @@
 <template>
   <div>
+    <TeyitForm
+      ref="teyitForm"
+      :mdl-text="siparisText"
+      @completed="confirmCompleted()"
+    />
     <v-tabs
       v-model="tab"
       slider-color="yellow"
@@ -72,6 +77,24 @@
             </template>
             <template #platformId="{ degisken }">
               <span>{{ degisken.platformId == '1' ? 'N11' : degisken.platformId == '2' ? 'HB' : '' }} </span>
+            </template>
+            <template #is_confirmed="{ degisken }">
+              <v-icon
+                v-if="degisken.is_confirmed == '0'"
+                color="red"
+                large
+                @click="showTeyitForm(degisken)"
+              >
+                mdi-alert-circle
+              </v-icon>
+              <v-icon
+                v-if="degisken.is_confirmed == '1'"
+                color="green"
+                large
+                @click="showTeyitForm(degisken)"
+              >
+                mdi-check
+              </v-icon>
             </template>
           </VuetifyDataTable>
         </v-card>
@@ -170,7 +193,6 @@
                 <v-list-item-content>
                   <v-list-item-title>{{ degisken.shippingCompanyName }}</v-list-item-title>
                   <v-list-item-subtitle>{{ degisken.campaignNumber }}</v-list-item-subtitle>
-                  <v-list-item-subtitle>{{ degisken.shippedDate }} </v-list-item-subtitle>
                 </v-list-item-content>
               </v-list-item>
             </template>
@@ -184,6 +206,13 @@
                   <v-list-item-subtitle class="text-wrap">
                     {{ item.orderable.productName }}
                   </v-list-item-subtitle>
+                </v-list-item-content>
+              </v-list-item>
+            </template>
+            <template #shippedDate="{ degisken }">
+              <v-list-item three-line class="pa-0">
+                <v-list-item-content>
+                  <v-list-item-subtitle>{{ formattedDate(degisken.shippedDate) }}</v-list-item-subtitle>
                 </v-list-item-content>
               </v-list-item>
             </template>
@@ -230,7 +259,13 @@
                 <v-list-item-content>
                   <v-list-item-title>{{ degisken.shippingCompanyName }}</v-list-item-title>
                   <v-list-item-subtitle>{{ degisken.campaignNumber }} </v-list-item-subtitle>
-                  <v-list-item-subtitle>{{ degisken.shippedDate }} </v-list-item-subtitle>
+                </v-list-item-content>
+              </v-list-item>
+            </template>
+            <template #shippedDate="{ degisken }">
+              <v-list-item three-line class="pa-0">
+                <v-list-item-content>
+                  <v-list-item-subtitle>{{ formattedDate(degisken.shippedDate) }} </v-list-item-subtitle>
                 </v-list-item-content>
               </v-list-item>
             </template>
@@ -259,6 +294,7 @@
 <script>
 /*eslint-disable*/
 import { mapState,mapGetters,mapActions,mapMutations } from "vuex";
+import TeyitForm from "~/components/TeyitForm.vue";
 export default {
   meta: {
     auth: { authority: 1 },
@@ -279,10 +315,16 @@ export default {
     formattedDate(date) {
       const options = { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric' };
       const dateObj = new Date(date);
-      return dateObj.toLocaleDateString('tr-TR', options);
+      return date ? dateObj.toLocaleDateString('tr-TR', options) : '';
     },
     clickedEdit(val) {},
     clickedDelete(val) {},
+    confirmCompleted(){
+      this.handleOptions({
+            page:1,
+            itemsPerPage:15,
+          }, "");
+    },
     handleOptions(options, search) {
       let obj = {
         search: search,
@@ -294,6 +336,10 @@ export default {
       this.getOrders(obj).then((result) => {
         this.loading = false;
       });
+    },
+    showTeyitForm(obj=null){
+          this.siparisText = obj.market_order_number + ' - ' +  this.formattedDate(obj.orderDate) + ' - ' + obj.buyer.fullName
+          this.$refs.teyitForm.showModal(obj);
     },
     onTabClick(e){
       this.resetState();
@@ -321,6 +367,7 @@ export default {
       keyItem: "id",
       status:1,
       loading:true,
+      siparisText:'',
       headers: [
           [
             {text: 'Platform', value: 'platformId'},
@@ -345,6 +392,7 @@ export default {
             {text: 'Müşteri Bilgileri', value: 'buyer'},
             {text: 'Ürün Bilgileri', value: 'items'},
             {text: 'Kargo Bilgileri', value: 'shippingCompanyName'},
+            {text: 'Kargolanma Tarihi', value: 'shippedDate'},
             {text: 'Sipariş Tutaru', value: 'dueAmount'},
           ],
           [
@@ -353,6 +401,7 @@ export default {
             {text: 'Müşteri Bilgileri', value: 'buyer'},
             {text: 'Ürün Bilgileri', value: 'items'},
             {text: 'Kargo Bilgileri', value: 'shippingCompanyName'},
+            {text: 'Kargolanma Tarihi', value: 'shippedDate'},
             {text: 'Sipariş Tutaru', value: 'dueAmount'},
           ],
       ],
@@ -382,8 +431,12 @@ export default {
           slotName: "items",
         },
         {
-          Id: 6,
+          Id: 7,
           slotName: "is_confirmed",
+        },
+        {
+          Id: 8,
+          slotName: "shippedDate",
         },
       ],
       title: ['Yeni Siparişler (Teyit Edilecek)','Kargolanacak', 'Kargolandı', 'Tamamlandı'],
