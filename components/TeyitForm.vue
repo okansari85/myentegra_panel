@@ -7,7 +7,7 @@
     @clicked-save="clickedSave"
   >
     <v-expansion-panels>
-      <v-expansion-panel v-for="(item,index ) in order.items" :key="item.id">
+      <v-expansion-panel v-for="(item,index) in localOrderItems" :key="item.id">
         <v-expansion-panel-header disable-icon-rotate>
           <v-list-item two-line class="pa-0">
             <v-list-item-content>
@@ -18,10 +18,10 @@
             </v-list-item-content>
           </v-list-item>
           <template #actions>
-            <v-icon v-if="!is_confirmed" color="error">
+            <v-icon v-if="!item.is_confirmed" color="error">
               mdi-alert-circle
             </v-icon>
-            <v-icon v-if="is_confirmed" color="success">
+            <v-icon v-if="item.is_confirmed" color="success">
               mdi-check
             </v-icon>
           </template>
@@ -29,7 +29,7 @@
         <v-divider />
         <v-expansion-panel-content>
           <TeyitItemForm
-            ref="teyitItemForm"
+            ref="teyitItemForms"
             :index="index"
             :seller-code="sellerCode[index]"
             :item="item"
@@ -54,9 +54,9 @@ export default {
   data(){
     return{
       order:[],
+      localOrderItems: [],
       site:'',
       loading:false,
-      is_confirmed:false,
     }
   },
   computed:{
@@ -74,8 +74,7 @@ export default {
        this.$refs.modals.dialog = true;
        this.order= obj;
        this.site = obj.platformId == '1' ? 'n11' : obj.platformId  == '2' ? 'hb' : '';
-       this.is_confirmed=obj.is_confirmed
-
+       this.localOrderItems = JSON.parse(JSON.stringify(obj.items));
     },
 
     handleEnter(value,site){
@@ -93,16 +92,24 @@ export default {
       let obj = {
         product_id: val.id,
         item_id:item.id,
+        index:index,
       };
 
+
       this.loading = true;
+
+
       this.confirmItemAndOrder(obj).then((result) => {
         this.loading = false;
-        this.is_confirmed=true
-        this.$emit('completed')
-        this.$refs.teyitItemForm[index].is_confirmed=1;
 
+        this.$set(this.localOrderItems, index, {
+          ...this.localOrderItems[index],
+            is_confirmed: 1
+          });
+          this.$refs.teyitItemForms[index].is_confirmed=1;
+          this.$emit('completed')
       });
+
 
     }
 

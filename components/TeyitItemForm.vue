@@ -28,7 +28,12 @@
               <v-list-item-subtitle>{{ product.productCode }} - {{ product.category.name }} </v-list-item-subtitle>
             </v-list-item-content>
             <Button v-if="!is_confirmed" label="Teyit Et" icon="pi pi-check" class="p-button-success" @click="confirmIt(product,item,index)" />
-            <Button v-if="is_confirmed" label="Değiştir" icon="pi pi-trash" @click="changeClick()" />
+            <Button
+              v-if="is_confirmed"
+              label="Değiştir"
+              icon="pi pi-trash"
+              @click="changeClick()"
+            />
           </v-list-item>
         </template>
         <template v-else-if="!try_again">
@@ -69,11 +74,15 @@ props:{
     },
     item :{
       type:Object,
-      default : {}
+      default() {
+        return {}
+      }
     },
     confirmedProduct:{
       type:Object,
-      default:{}
+      default() {
+        return {}
+      }
     },
     index:{
       type:Number,
@@ -140,9 +149,14 @@ data(){
 
 mounted() {
     this.is_confirmed = this.item.is_confirmed;
-    this.productCode = this.sellerCode
-    if (this.is_confirmed) this.product=this.confirmedProduct
-    if (!this.is_confirmed)  this.handleEnter(this.productCode);
+    this.productCode = this.sellerCode;
+
+    if (this.is_confirmed){
+        this.product=this.confirmedProduct
+      }
+      else{
+        this.handleEnter(this.productCode);
+      }
   }
 }
 

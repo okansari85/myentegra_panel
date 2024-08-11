@@ -50,6 +50,7 @@
       <v-divider />
       <DataTable
         ref="dt"
+        class="editable-cells-table"
         responsive-layout="stack"
         :value="items"
         :lazy="true"
@@ -63,6 +64,7 @@
         :filters.sync="filters"
         :selection.sync="selectedCustomers"
         :select-all="selectAll"
+        edit-mode="cell"
         @page="onPage($event)"
         @select-all-change="onSelectAllChange"
         @row-select="onRowSelect"
@@ -81,33 +83,51 @@
             </div>
           </template>
         </Column>
-        <Column field="productCode" header="Stok Kodu" style="width: 20%" />
-        <Column field="stock" header="STOK">
+        <Column field="productCode" header="Stok Kodu" style="width: 5%" />
+        <Column field="stock" header="STOK" :styles="{width: '5%'}">
           <template #body="slotProps">
-            <span> {{ slotProps.data.stock }}</span>
+            <InputText v-model="slotProps.data.stock" class="custom-width" />
+          </template>
+          <template #editor="{ data, field }">
+            <InputText
+              v-model="data[field]"
+              class="custom-width"
+            />
           </template>
         </Column>
         <Column field="desi" header="Desi">
           <template #body="slotProps">
-            <span> {{ slotProps.data.desi }}</span>
+            <InputText v-model="slotProps.data.desi" class="custom-width" />
+          </template>
+          <template #editor="{ data, field }">
+            <InputText
+              v-model="data[field]"
+              class="custom-width"
+            />
           </template>
         </Column>
-        <Column field="price" header="Fiyat" style="width: 20%">
+        <Column field="price" header="Fiyat" style="width: 5%">
           <template #body="slotProps">
-            <span> {{ formatCurrency(slotProps.data.price * 1) }}</span>
+            <InputText v-model="slotProps.data.price" class="custom-width" />
+          </template>
+          <template #editor="{ data, field }">
+            <InputText class="custom-width" v-model="data[field]" show-buttons mode="currency" currency="TRY" />
           </template>
         </Column>
-        <Column field="price" header="Maliyet" style="width: 20%">
+        <Column field="price" header="Maliyet" style="width: 5%">
           <template #body="slotProps">
             <span> {{ formatCurrency((slotProps.data.price * 1.1 *1.2)+30) }}</span>
           </template>
         </Column>
-        <Column field="profit_rate" header="Kar Marjı" style="width: 20%">
+        <Column field="profit_rate" header="Kar Marjı" style="width: 5%">
           <template #body="slotProps">
-            <span> {{ slotProps.data.profit_rate }}</span>
+            <InputText v-model="slotProps.data.profit_rate" class="custom-width" />
+          </template>
+          <template #editor="{ data, field }">
+            <InputText v-model="data[field]" :min-fraction-digits="2" :max-fracion-digits="2" class="custom-width" />
           </template>
         </Column>
-        <Column field="price" header="Kar" style="width: 20%">
+        <Column field="price" header="Kar" style="width: 5%">
           <template #body="slotProps">
             <v-chip
               color="green"
@@ -426,7 +446,7 @@ mounted() {
 
         },
         formatCurrency(value) {
-            return value.toLocaleString('tr-TR', {style: 'currency', currency: 'TRY'});
+            return new Intl.NumberFormat('tr-TR', {style: 'currency',currency: 'TRY',}).format(value);
         },
         onPage(event) {
            console.log(event);
@@ -480,6 +500,11 @@ mounted() {
 }
 </script>
 <style>
+
+.inputOnDataTable input
+{
+    width: 70px !important;
+}
 .p-datatable table {
     border-collapse: seperate !important;
     border-spacing : 0px 10px;
@@ -576,5 +601,12 @@ mounted() {
     align-items: center;
     position: relative;
 }
+
+
+.custom-width {
+  width: 70px !important;
+}
+
+
 
 </style>

@@ -5,6 +5,6 @@ export default function (ctx, inject) {
   } = ctx;
 const entegraApi = $axios.create()
 entegraApi.defaults.withCredentials = true
-entegraApi.setBaseURL("https://sarielektronik.com/api/public/api/")
+entegraApi.setBaseURL("http://localhost:8000/api/")
 inject('entegraApi', entegraApi)
 }

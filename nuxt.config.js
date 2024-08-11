@@ -75,6 +75,7 @@ export default {
     "InputNumber",
     "Button",
     "Galleria",
+    "Inplace",
     "Message","BreadCrumb","Datatable","Column","Card","Toolbar","Dialog","Toast","Chips","InputMask","ProgressBar","CascadeSelect" ]
   },
 
