@@ -11,7 +11,7 @@
         <v-expansion-panel-header disable-icon-rotate>
           <v-list-item two-line class="pa-0">
             <v-list-item-content>
-              <v-list-item-title>{{ item.orderable.productSellerCode }}{{ item.orderable.merchantSku }} x {{ item.orderable.quantity }}</v-list-item-title>
+              <v-list-item-title>{{ item.orderable.productSellerCode }}{{ item.orderable.merchantSku }}{{ item.orderable.productStockCode }}  x {{ item.orderable.quantity }}</v-list-item-title>
               <v-list-item-subtitle class="text-wrap">
                 {{ item.orderable.productName }}
               </v-list-item-subtitle>
@@ -73,7 +73,7 @@ export default {
     showModal(obj=null){
        this.$refs.modals.dialog = true;
        this.order= obj;
-       this.site = obj.platformId == '1' ? 'n11' : obj.platformId  == '2' ? 'hb' : '';
+       this.site = obj.platformId == '1' ? 'n11' : obj.platformId  == '2' ? 'hb' : obj.platformId == '3' ? 'pazarama' : '';
        this.localOrderItems = JSON.parse(JSON.stringify(obj.items));
     },
 
@@ -85,6 +85,8 @@ export default {
         ? item.orderable.productSellerCode
         : this.site === 'hb'
         ? item.orderable.merchantSku
+        : this.site === 'pazarama'
+        ? item.orderable.productStockCode
         : '';
     },
     confirmITem(val,item,index){

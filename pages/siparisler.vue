@@ -65,7 +65,7 @@
             <template #items="{ degisken }">
               <v-list-item v-for="item in degisken.items" :key="item.id" two-line class="pa-0">
                 <v-list-item-content>
-                  <v-list-item-title>{{ item.orderable.productSellerCode }}{{ item.orderable.merchantSku }} x {{ item.orderable.quantity }}</v-list-item-title>
+                  <v-list-item-title>{{ item.orderable.productSellerCode }}{{ item.orderable.merchantSku }} {{ item.orderable.productStockCode }} x {{ item.orderable.quantity }}</v-list-item-title>
                   <v-list-item-subtitle class="text-wrap">
                     {{ item.orderable.productName }}
                   </v-list-item-subtitle>
@@ -76,7 +76,7 @@
               <span style="font-weight: bold;font-size:16px;"><b>{{ parseFloat(degisken.dueAmount).toFixed(2) }}</b></span>
             </template>
             <template #platformId="{ degisken }">
-              <span>{{ degisken.platformId == '1' ? 'N11' : degisken.platformId == '2' ? 'HB' : '' }} </span>
+              <span>{{ degisken.platformId == '1' ? 'N11' : degisken.platformId == '2' ? 'HB' : degisken.platformId== '3' ? 'PAZARAMA' : '' }} </span>
             </template>
             <template #is_confirmed="{ degisken }">
               <v-icon
@@ -141,7 +141,7 @@
             <template #items="{ degisken }">
               <v-list-item v-for="item in degisken.items" :key="item.id" two-line class="pa-0">
                 <v-list-item-content>
-                  <v-list-item-title>{{ item.orderable.productSellerCode }}{{ item.orderable.merchantSku }} x {{ item.orderable.quantity }}</v-list-item-title>
+                  <v-list-item-title>{{ item.orderable.productSellerCode }}{{ item.orderable.merchantSku }} {{ item.orderable.productStockCode }} x {{ item.orderable.quantity }}</v-list-item-title>
                   <v-list-item-subtitle class="text-wrap">
                     {{ item.orderable.productName }}
                   </v-list-item-subtitle>
@@ -149,7 +149,7 @@
               </v-list-item>
             </template>
             <template #platformId="{ degisken }">
-              <span>{{ degisken.platformId == '1' ? 'N11' : degisken.platformId == '2' ? 'HB' : '' }} </span>
+              <span>{{ degisken.platformId == '1' ? 'N11' : degisken.platformId == '2' ? 'HB' : degisken.platformId== '3' ? 'PAZARAMA' : '' }} </span>
             </template>
             <template #dueAmount="{ degisken }">
               <span style="font-weight: bold;"><b>{{ degisken.dueAmount }}</b></span>
@@ -197,12 +197,12 @@
               </v-list-item>
             </template>
             <template #platformId="{ degisken }">
-              <span>{{ degisken.platformId == '1' ? 'N11' : degisken.platformId == '2' ? 'HB' : '' }} </span>
+              <span>{{ degisken.platformId == '1' ? 'N11' : degisken.platformId == '2' ? 'HB' : degisken.platformId== '3' ? 'PAZARAMA' : '' }} </span>
             </template>
             <template #items="{ degisken }">
               <v-list-item v-for="item in degisken.items" :key="item.id" two-line class="pa-0">
                 <v-list-item-content>
-                  <v-list-item-title>{{ item.orderable.productSellerCode }}{{ item.orderable.merchantSku }} x {{ item.orderable.quantity }}</v-list-item-title>
+                  <v-list-item-title>{{ item.orderable.productSellerCode }}{{ item.orderable.merchantSku }} {{ item.orderable.productStockCode }} x {{ item.orderable.quantity }}</v-list-item-title>
                   <v-list-item-subtitle class="text-wrap">
                     {{ item.orderable.productName }}
                   </v-list-item-subtitle>
@@ -270,12 +270,12 @@
               </v-list-item>
             </template>
             <template #platformId="{ degisken }">
-              <span>{{ degisken.platformId == '1' ? 'N11' : degisken.platformId == '2' ? 'HB' : '' }} </span>
+              <span>{{ degisken.platformId == '1' ? 'N11' : degisken.platformId == '2' ? 'HB' : degisken.platformId== '3' ? 'PAZARAMA' : '' }} </span>
             </template>
             <template #items="{ degisken }">
               <v-list-item v-for="item in degisken.items" :key="item.id" two-line class="pa-0">
                 <v-list-item-content>
-                  <v-list-item-title>{{ item.orderable.productSellerCode }}{{ item.orderable.merchantSku }} x {{ item.orderable.quantity }}</v-list-item-title>
+                  <v-list-item-title>{{ item.orderable.productSellerCode }}{{ item.orderable.merchantSku }} {{ item.orderable.productStockCode }} x {{ item.orderable.quantity }}</v-list-item-title>
                   <v-list-item-subtitle class="text-wrap">
                     {{ item.orderable.productName }}
                   </v-list-item-subtitle>
@@ -402,7 +402,7 @@ export default {
             {text: 'Ürün Bilgileri', value: 'items'},
             {text: 'Kargo Bilgileri', value: 'shippingCompanyName'},
             {text: 'Kargolanma Tarihi', value: 'shippedDate'},
-            {text: 'Sipariş Tutaru', value: 'dueAmount'},
+            {text: 'Sipariş Tutarı', value: 'dueAmount'},
           ],
       ],
       slots: [
