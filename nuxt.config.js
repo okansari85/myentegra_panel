@@ -76,7 +76,13 @@ export default {
     "Button",
     "Galleria",
     "Inplace",
-    "Message","BreadCrumb","Datatable","Column","Card","Toolbar","Dialog","Toast","Chips","InputMask","ProgressBar","CascadeSelect" ]
+    "Message",
+    "BreadCrumb",
+    "Datatable",
+    "Column",
+    "Card",
+    "Toolbar",
+    "Dialog","Toast","Chips","InputMask","ProgressBar","CascadeSelect","FileUpload" ]
   },
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios

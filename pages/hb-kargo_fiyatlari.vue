@@ -3,22 +3,31 @@
     <v-toolbar color="primary" dark extended extension-height="63" flat>
       <v-icon>mdi-magnify</v-icon>
       <v-toolbar-title style="margin-left:10px;">
-        N11 Kargo Fiyatları
+        HB Kargo Fiyatları
       </v-toolbar-title>
     </v-toolbar>
     <v-card eager class="mx-auto" style="margin-top:-34px" max-width="90%" flat>
       <Toast />
       <Toolbar class="mb-4">
         <template #start>
+          <FileUpload
+            v-model="file"
+            name="file"
+            mode="basic"
+            choose-label="Excel Dosyası Seçin"
+            accept=".xls,.xlsx"
+            @select="onFileSelect"
+          />
           <Button
             label="Kargo Fiyatlarını Güncelle"
-            icon="pi pi-plus"
-            class="p-button-success mr-2"
-            @click="openDialog"
+            icon="pi pi-upload"
+            class="p-button-success ml-2"
+            @click="uploadFile"
           />
         </template>
       </Toolbar>
     </v-card>
+
     <SimpleDataTable
       :columns="columns"
       :items="cargoPrices"
@@ -26,7 +35,7 @@
     <Dialog :visible.sync="showDialog" :styles="{width: '450px'}" header="Confirm" :modal="true">
       <div class="confirmation-content">
         <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem" />
-        <span>Bu istek N11 'e bağlanarak kargo fiyatlarını güncelleyecektir ? </span>
+        <span>HB Kargo Fiyatları Güncellensin mi ? </span>
       </div>
       <template #footer>
         <Button
@@ -53,10 +62,15 @@
 import { mapState,mapGetters,mapActions,mapMutations } from "vuex";
 import Toast from "primevue/toast";
 import ToastService from "primevue/toastservice";
+
+import Toolbar from 'primevue/toolbar';
+import Button from 'primevue/button';
+import FileUpload from 'primevue/fileupload';
+
 export default {
   async created() {
       this.loading=true;
-      await this.getN11CargoPrices().then(()=>{
+      await this.getHbCargoPrices().then(()=>{
         this.loading=false;
       });
   },
@@ -71,22 +85,22 @@ export default {
             {field: 'ptt_price', header: 'PTT'},
             {field: 'mng_price', header: 'MNG'},
             {field: 'surat_price', header: 'Sürat'},
-            {field: 'sendeo_price', header: 'Sendeo'},
         ],
         showDialog: false,
+        file: null, // Seçilen dosya
 
     }
   },
   computed:{
   ...mapState({
-        cargoPrices : state=> state.n11CargoPrices.cargoPrices,
+        cargoPrices : state=> state.hbCargoPrices.cargoPrices,
       }),
   },
   methods:{
     ...mapActions(
         {
-          getN11CargoPrices:'n11CargoPrices/getN11CargoPrices',
-          getCargoPriceFromN11:'n11CargoPrices/getCargoPriceFromN11',
+          getHbCargoPrices:'hbCargoPrices/getHbCargoPrices',
+          getCargoPriceFromFile:'hbCargoPrices/getCargoPriceFromFile',
         }),
       confirmDialog(){
         this.loading=true;
@@ -105,6 +119,30 @@ export default {
       openDialog() {
             this.showDialog = true;
       },
+      onFileSelect(event) {
+      this.file = event.files[0]; // Seçilen dosyayı kaydet
+      },
+
+      async uploadFile() {
+      if (!this.file) {
+        this.$toast.add({ severity: 'error', summary: 'Hata', detail: 'Lütfen bir dosya seçin' });
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append('file', this.file);
+
+      try {
+        //importHbCargoPricesFromFile
+        await this.getCargoPriceFromFile(formData).then(()=>{
+          this.$toast.add({ severity: 'success', summary: 'Başarılı', detail: 'Dosya başarıyla yüklendi' });
+        })
+
+      } catch (error) {
+        this.$toast.add({ severity: 'error', summary: 'Hata', detail: 'Dosya yükleme hatası' });
+      }
+    },
+
   }
 
 }

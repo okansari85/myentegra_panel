@@ -111,12 +111,12 @@
             <InputText v-model="slotProps.data.price" class="custom-width" />
           </template>
           <template #editor="{ data, field }">
-            <InputText class="custom-width" v-model="data[field]" show-buttons mode="currency" currency="TRY" />
+            <InputText v-model="data[field]" class="custom-width" show-buttons mode="currency" currency="TRY" />
           </template>
         </Column>
         <Column field="price" header="Maliyet" style="width: 5%">
           <template #body="slotProps">
-            <span> {{ formatCurrency((slotProps.data.price * 1.1 *1.2)+30) }}</span>
+            <span> {{ formatCurrency(slotProps.data.cost) }}</span>
           </template>
         </Column>
         <Column field="profit_rate" header="Kar Marjı" style="width: 5%">
@@ -135,13 +135,13 @@
     font-size: 14px;
     height: 30px;color:white;"
             >
-              {{ formatCurrency( (((slotProps.data.price * 1.1 *1.2)+30)*slotProps.data.profit_rate)-((slotProps.data.price * 1.1 *1.2)+30)) }}
+              {{ formatCurrency(slotProps.data.profit) }}
             </v-chip>
           </template>
         </Column>
         <Column field="price" header="Karlı Fiyat" style="width: 20%">
           <template #body="slotProps">
-            <span> {{ formatCurrency(((slotProps.data.price * 1.1 *1.2)+30)*slotProps.data.profit_rate) }}</span>
+            <span> {{ formatCurrency(slotProps.data.last) }}</span>
           </template>
         </Column>
         <Column :exportable="false" header="Pazaryerleri" :styles="{'min-width':'8rem'}">

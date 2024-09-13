@@ -107,6 +107,19 @@
             </v-list-item>
           </v-list-group>
           <v-list-group
+            prepend-icon="mdi-exclamation"
+          >
+            <template #activator>
+              <v-list-item-title>HB</v-list-item-title>
+            </template>
+            <v-list-item
+              link
+              to="/hb-kargo_fiyatlari"
+            >
+              <v-list-item-title>Kargo Fiyat Listesi</v-list-item-title>
+            </v-list-item>
+          </v-list-group>
+          <v-list-group
             prepend-icon="mdi-cog"
           >
             <template #activator>
