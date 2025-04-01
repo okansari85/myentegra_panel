@@ -64,6 +64,12 @@ export const actions = {
       return res;
    })
 },
+  async updateStockByProductId({commit},obj){
+    return await this.$entegraApi.$post('/updateStock',obj).then(res=>{
+      return res;
+  })
+  },
+
   async matchProduct({commit},obj){
     return await this.$entegraApi.$post('/matchN11Product',obj).then(res=>{
       return res;

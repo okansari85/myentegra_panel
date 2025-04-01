@@ -51,6 +51,7 @@
       <DataTable
         ref="dt"
         class="editable-cells-table"
+        :editing-rows.sync="editingRows"
         responsive-layout="stack"
         :value="items"
         :lazy="true"
@@ -69,6 +70,8 @@
         @select-all-change="onSelectAllChange"
         @row-select="onRowSelect"
         @row-unselect="onRowUnselect"
+        @row-edit-save="onRowEditSave"
+        @cell-edit-complete="onCellEditComplete"
       >
         <Column selection-mode="multiple" />
         <Column field="productTitle" header="Ürün">
@@ -85,9 +88,6 @@
         </Column>
         <Column field="productCode" header="Stok Kodu" style="width: 5%" />
         <Column field="stock" header="STOK" :styles="{width: '5%'}">
-          <template #body="slotProps">
-            <InputText v-model="slotProps.data.stock" class="custom-width" />
-          </template>
           <template #editor="{ data, field }">
             <InputText
               v-model="data[field]"
@@ -95,21 +95,16 @@
             />
           </template>
         </Column>
-        <Column field="desi" header="Desi">
-          <template #body="slotProps">
-            <InputText v-model="slotProps.data.desi" class="custom-width" />
-          </template>
+        <Column field="desi" header="DESİ" style="width: 6%;min-width: 80px;">
           <template #editor="{ data, field }">
             <InputText
               v-model="data[field]"
-              class="custom-width"
+              class="custom-width-desi"
+              @keyup.enter="updateDesi(data)"
             />
           </template>
         </Column>
-        <Column field="price" header="Fiyat" style="width: 5%">
-          <template #body="slotProps">
-            <InputText v-model="slotProps.data.price" class="custom-width" />
-          </template>
+        <Column field="price" header="FİYAT" style="width: 10%">
           <template #editor="{ data, field }">
             <InputText v-model="data[field]" class="custom-width" show-buttons mode="currency" currency="TRY" />
           </template>
@@ -120,11 +115,13 @@
           </template>
         </Column>
         <Column field="profit_rate" header="Kar Marjı" style="width: 5%">
-          <template #body="slotProps">
-            <InputText v-model="slotProps.data.profit_rate" class="custom-width" />
-          </template>
           <template #editor="{ data, field }">
-            <InputText v-model="data[field]" :min-fraction-digits="2" :max-fracion-digits="2" class="custom-width" />
+            <InputText
+              v-model="data[field]"
+              :min-fraction-digits="2"
+              :max-fracion-digits="2"
+              class="custom-width"
+            />
           </template>
         </Column>
         <Column field="price" header="Kar" style="width: 5%">
@@ -302,6 +299,7 @@ computed: {
 },
 data() {
         return {
+            editingRows: [],
             selectedCustomers: null,
             selectAll: false,
             lazyParams: {},
@@ -339,10 +337,38 @@ mounted() {
           getN11ProductBySellerCode: "products/getN11ProductBySellerCode",
           matchProduct : "products/matchProduct",
           matchHbProduct: "products/matchHbProduct",
+          updateStockByProductId : "products/updateStockByProductId",
+          updateDesiByProductId : "products/updateDesiByProductId",
           getHbListingByMerchantSku : "products/getHbListingByMerchantSku",
         }),
+        onCellEditComplete(event) {
+            let { data, newValue, field } = event;
+
+            switch (field) {
+                case 'quantity':
+                case 'desi':
+                  console.log(newValue)
+                break;
+
+                default:
+                event.preventDefault();
+                break;
+            }
+        },
+        onRowEditSave(event) {
+            let { newData, index } = event;
+
+            console.log(newData)
+        },
         openMaximizable() {
             this.displayMaximizable = true;
+        },
+        updateDesi(val){
+            let obj = {
+              product_id : val.id,
+              desi : val.desi,
+            }
+            console.log(obj)
         },
         closeMaximizable() {
             this.displayMaximizable = false;
@@ -604,9 +630,11 @@ mounted() {
 
 
 .custom-width {
-  width: 70px !important;
+  width: 50px !important;
 }
 
-
+.custom-width-desi {
+  width: 30px !important;
+}
 
 </style>

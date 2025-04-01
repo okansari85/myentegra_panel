@@ -62,7 +62,7 @@ export default {
       const findBatchID = await this.$entegraApi.$get('/findBatchIdByName/n11pricestockupdate').then(res=>{
         if (res.id){
         this.batchId = res.id;
-        this.intervalId = setInterval(this.checkProgress, 1000);
+        this.intervalId = setInterval(this.checkProgress, 5000);
        }
 
       });
